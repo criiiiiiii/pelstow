@@ -3,540 +3,523 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Homelab Status</title>
+<title>Pelstow — Strategy. Markets. Intelligence. Analytics.</title>
+<meta name="description" content="Pelstow is a boutique strategy consultancy helping mid-market businesses navigate complex markets, define where they compete, and build strategies that hold up under pressure.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  /* ── Reset ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  img { display: block; max-width: 100%; }
+
+  /* ── Tokens ── */
   :root {
-    --bg: #f5f5f3; --bg2: #ffffff; --bg3: #eeede9;
-    --text: #1a1a18; --text2: #555550; --text3: #999990;
-    --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.22);
-    --radius-md: 8px; --radius-lg: 12px;
+    --obsidian: #1A1A18;
+    --chalk:    #F5F4F0;
+    --braun:    #D4570A;
+    --slate:    #7A7A72;
+    --charcoal: #2E2E2A;
+    --rule:     #C8C7BE;
+    --rule-dk:  #2A2A26;
+    --muted:    #5A5A54;
+    --muted-dk: #6A6A64;
+    --ghost:    #4A4A44;
+    --light:    #E0DFD8;
+    --sans:     'IBM Plex Sans', sans-serif;
+    --mono:     'IBM Plex Mono', monospace;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #1a1a18; --bg2: #242422; --bg3: #2e2e2c;
-      --text: #f0efea; --text2: #aaa9a0; --text3: #666660;
-      --border: rgba(255,255,255,0.10); --border2: rgba(255,255,255,0.20);
-    }
+
+  /* ── Base ── */
+  body {
+    font-family: var(--sans);
+    background: var(--chalk);
+    color: var(--obsidian);
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
   }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 1.5rem; font-size: 14px; }
-  h1 { font-size: 20px; font-weight: 500; }
-  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 12px; }
-  .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-  .last-updated { font-size: 12px; color: var(--text3); }
-  .overall-badge { display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; }
-  .overall-ok   { background: #EAF3DE; color: #3B6D11; }
-  .overall-warn { background: #FAEEDA; color: #854F0B; }
-  .overall-err  { background: #FCEBEB; color: #A32D2D; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
-  .dot-ok      { background: #639922; }
-  .dot-warn    { background: #BA7517; }
-  .dot-err     { background: #E24B4A; }
-  .dot-loading { background: #aaa; }
-  .dot-na      { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; display: inline-block; background: var(--text3); }
-  .pulse { animation: pulse 1.5s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
-  .section-title { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; margin-top: 1.5rem; }
-  .section-title:first-of-type { margin-top: 0; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 1rem; }
-  .card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
-  .card-header { display: flex; align-items: center; justify-content: space-between; }
-  .card-name { font-size: 13px; font-weight: 500; }
-  .card-meta { font-size: 11px; color: var(--text3); }
-  .status-label { font-size: 12px; color: var(--text2); }
-  .status-label-ok   { color: #3B6D11; }
-  .status-label-err  { color: #A32D2D; }
-  .status-label-warn { color: #854F0B; }
-  .host-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px 18px; margin-bottom: 10px; }
-  .host-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-  .host-name { font-size: 14px; font-weight: 500; }
-  .host-ip { font-size: 11px; color: var(--text3); margin-top: 2px; }
-  .host-status { display: flex; align-items: center; gap: 6px; }
-  .services-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-bottom: 10px; }
-  .services-row:last-child { margin-bottom: 0; }
-  .svc-chip { display: flex; align-items: center; justify-content: space-between; background: var(--bg3); border-radius: var(--radius-md); padding: 8px 12px; gap: 8px; }
-  .svc-chip-left { display: flex; flex-direction: column; gap: 2px; }
-  .svc-chip-name { font-size: 12px; font-weight: 500; }
-  .svc-chip-port { font-size: 11px; color: var(--text3); }
-  .svc-chip-na { opacity: 0.5; }
-  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 1rem; }
-  .host-metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-top: 10px; }
-  .metric-card { background: var(--bg3); border-radius: var(--radius-md); padding: 12px 14px; }
-  .host-metric-card { background: var(--bg3); border-radius: var(--radius-md); padding: 10px 12px; }
-  .metric-label { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
-  .metric-value { font-size: 20px; font-weight: 500; line-height: 1.2; }
-  .host-metric-value { font-size: 16px; font-weight: 500; line-height: 1.2; }
-  .metric-unit { font-size: 12px; font-weight: 400; color: var(--text3); }
-  .bar-wrap { height: 5px; background: var(--border); border-radius: 3px; margin-top: 8px; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s, background 0.5s; }
-  .section-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px 18px; margin-bottom: 1rem; }
-  .probe-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .probe-table th { text-align: left; font-weight: 500; font-size: 11px; color: var(--text3); padding: 0 8px 8px 0; text-transform: uppercase; letter-spacing: 0.05em; }
-  .probe-table td { padding: 7px 8px 7px 0; border-top: 0.5px solid var(--border); vertical-align: middle; }
-  .probe-table td.latency { text-align: right; color: var(--text2); }
-  .pill { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 999px; }
-  .pill-ok   { background: #EAF3DE; color: #3B6D11; }
-  .pill-err  { background: #FCEBEB; color: #A32D2D; }
-  .pill-na   { background: var(--bg3); color: var(--text3); }
-  .footer { display: flex; align-items: center; justify-content: space-between; margin-top: 1.5rem; flex-wrap: wrap; gap: 8px; }
-  .footer-note { font-size: 11px; color: var(--text3); }
-  .refresh-btn { font-size: 12px; cursor: pointer; padding: 5px 14px; background: transparent; border: 0.5px solid var(--border2); border-radius: var(--radius-md); color: var(--text); }
-  .refresh-btn:hover { background: var(--bg3); }
-  .divider { border: none; border-top: 0.5px solid var(--border); margin: 10px 0; }
+
+  /* ── Utilities ── */
+  .mono    { font-family: var(--mono); }
+  .label   { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); }
+  .label-dk{ font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ghost); }
+  .rule-h  { height: 1px; background: var(--rule); }
+
+  /* ── Logo mark ── */
+  .logo-lockup { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-text   { display: flex; flex-direction: column; }
+  .logo-word   { font-family: var(--sans); font-size: 15px; font-weight: 400; letter-spacing: 0.12em; color: var(--obsidian); text-transform: uppercase; line-height: 1; }
+  .logo-sub    { font-family: var(--mono); font-size: 8px; letter-spacing: 0.14em; color: var(--slate); margin-top: 3px; text-transform: uppercase; }
+
+  /* ── Nav ── */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 48px;
+    border-bottom: 1px solid var(--rule);
+    position: sticky;
+    top: 0;
+    background: var(--chalk);
+    z-index: 100;
+  }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-link  { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate); text-decoration: none; transition: color 0.15s; }
+  .nav-link:hover { color: var(--obsidian); }
+  .nav-cta   { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--chalk); background: var(--obsidian); padding: 9px 18px; text-decoration: none; transition: background 0.15s; }
+  .nav-cta:hover { background: var(--braun); }
+
+  /* ── Hero ── */
+  .hero {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    border-bottom: 1px solid var(--rule);
+    min-height: 420px;
+  }
+  .hero-l {
+    padding: 64px 48px;
+    border-right: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .hero-r {
+    padding: 64px 48px;
+    background: var(--obsidian);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .eyebrow { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); margin-bottom: 24px; }
+  .hero-h1 { font-size: 56px; font-weight: 300; line-height: 1.05; letter-spacing: -0.02em; color: var(--obsidian); }
+  .hero-h1 strong { font-weight: 500; }
+  .hero-tagline { font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; color: var(--braun); margin-top: 32px; }
+  .hero-body { font-size: 13px; line-height: 1.85; color: #F0EFE8; font-weight: 300; margin-bottom: 32px; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule-dk); border-top: 1px solid var(--rule-dk); }
+  .stat { background: var(--obsidian); padding: 20px; }
+  .stat-n { font-family: var(--mono); font-size: 22px; font-weight: 500; color: var(--chalk); }
+  .stat-l { font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ghost); margin-top: 4px; }
+
+  /* ── Section header ── */
+  .sec-hd {
+    padding: 20px 48px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  /* ── Services ── */
+  .svc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid var(--rule);
+  }
+  .sc {
+    padding: 32px 28px;
+    border-right: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+  }
+  .sc:last-child { border-right: none; }
+  .sn { font-family: var(--mono); font-size: 9px; color: var(--braun); margin-bottom: 18px; letter-spacing: 0.08em; }
+  .st { font-size: 13px; font-weight: 500; color: var(--obsidian); margin-bottom: 12px; }
+  .sd { font-size: 11px; color: var(--muted); line-height: 1.75; font-weight: 300; flex: 1; }
+  .tags { margin-top: 24px; display: flex; flex-direction: column; }
+  .tag { font-family: var(--mono); font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--slate); padding: 6px 0; border-top: 0.5px solid var(--rule); }
+
+  /* ── Positioning ── */
+  .pos {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    border-bottom: 1px solid var(--rule);
+  }
+  .pos-l { padding: 56px 48px; border-right: 1px solid var(--rule); }
+  .pos-r { padding: 56px 48px; display: flex; flex-direction: column; justify-content: space-between; }
+  .pos-bar { width: 28px; height: 2px; background: var(--braun); margin-bottom: 28px; }
+  .pos-h { font-size: 26px; font-weight: 300; line-height: 1.3; color: var(--obsidian); letter-spacing: -0.01em; margin-bottom: 24px; }
+  .pos-body { font-size: 12px; line-height: 1.9; color: #3A3A34; font-weight: 300; }
+  .pts { margin-top: 32px; }
+  .pt { display: flex; gap: 14px; padding: 11px 0; border-top: 0.5px solid var(--rule); align-items: baseline; }
+  .ptn { font-family: var(--mono); font-size: 8px; color: var(--braun); min-width: 16px; }
+  .ptx { font-size: 11px; color: var(--muted); font-weight: 300; line-height: 1.5; }
+  .pullquote { border-top: 2px solid var(--braun); padding-top: 24px; margin-top: 40px; }
+  .pq-text { font-size: 22px; font-weight: 300; line-height: 1.35; color: var(--obsidian); letter-spacing: -0.01em; }
+  .pq-text em { font-style: normal; font-weight: 500; }
+
+  /* ── Sectors ── */
+  .mkt-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-bottom: 1px solid var(--rule);
+  }
+  .mc { padding: 36px 48px; border-right: 1px solid var(--rule); display: flex; flex-direction: column; }
+  .mc:last-child { border-right: none; }
+  .mbar { width: 100%; height: 2px; background: var(--light); margin-bottom: 24px; }
+  .mfill { height: 2px; background: var(--braun); }
+  .ml { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--obsidian); margin-bottom: 10px; font-weight: 500; }
+  .md { font-size: 11px; color: var(--muted); font-weight: 300; line-height: 1.75; flex: 1; }
+
+  /* ── Contact ── */
+  .contact-band {
+    background: var(--obsidian);
+    padding: 72px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .ct-l { border-right: 1px solid var(--rule-dk); padding-right: 48px; display: flex; flex-direction: column; justify-content: space-between; }
+  .ct-r { padding-left: 48px; }
+  .ct-h { font-size: 30px; font-weight: 300; color: var(--chalk); letter-spacing: -0.01em; line-height: 1.25; margin-bottom: 20px; }
+  .ct-body { font-size: 12px; color: var(--muted-dk); line-height: 1.85; font-weight: 300; margin-bottom: 32px; }
+
+  /* ── Form ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .form-field { display: flex; flex-direction: column; gap: 6px; }
+  .form-field.full { grid-column: 1 / -1; }
+  .form-field label { font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ghost); }
+  .form-field input,
+  .form-field textarea {
+    background: transparent;
+    border: 0.5px solid var(--rule-dk);
+    color: var(--chalk);
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 300;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+    resize: none;
+    border-radius: 0;
+    -webkit-appearance: none;
+  }
+  .form-field input:focus,
+  .form-field textarea:focus { border-color: var(--braun); }
+  .form-field input::placeholder,
+  .form-field textarea::placeholder { color: var(--ghost); }
+  .form-field textarea { min-height: 100px; }
+
+  /* Human check */
+  .human-check { display: flex; align-items: center; gap: 10px; margin: 16px 0; cursor: pointer; }
+  .human-check input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 16px; height: 16px; border: 0.5px solid var(--rule-dk); background: transparent; cursor: pointer; flex-shrink: 0; transition: border-color 0.15s, background 0.15s; }
+  .human-check input[type="checkbox"]:checked { background: var(--braun); border-color: var(--braun); background-image: url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4L3.5 6.5L9 1' stroke='%23F5F4F0' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: center; }
+  .human-check span { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; color: var(--ghost); text-transform: uppercase; }
+
+  .form-submit {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    background: var(--braun);
+    color: var(--chalk);
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    transition: opacity 0.15s;
+    margin-top: 4px;
+  }
+  .form-submit:disabled { opacity: 0.35; cursor: not-allowed; }
+  .form-submit:not(:disabled):hover { opacity: 0.88; }
+
+  .form-success { display: none; text-align: center; padding: 40px 0; }
+  .form-success .fs-icon { width: 32px; height: 32px; background: var(--braun); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+  .form-success p { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ghost); }
+
+  /* ── Footer ── */
+  footer {
+    padding: 20px 48px;
+    background: var(--obsidian);
+    border-top: 1px solid var(--rule-dk);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .ft { font-family: var(--mono); font-size: 9px; color: var(--ghost); letter-spacing: 0.06em; }
+  .ft-logo { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--braun); letter-spacing: 0.16em; }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links .nav-link { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-l { padding: 48px 24px; }
+    .hero-r { padding: 48px 24px; }
+    .hero-h1 { font-size: 40px; }
+    .svc-grid { grid-template-columns: 1fr 1fr; }
+    .sc { border-bottom: 1px solid var(--rule); }
+    .pos { grid-template-columns: 1fr; }
+    .pos-l { border-right: none; border-bottom: 1px solid var(--rule); padding: 40px 24px; }
+    .pos-r { padding: 40px 24px; }
+    .mkt-grid { grid-template-columns: 1fr; }
+    .mc { border-right: none; border-bottom: 1px solid var(--rule); }
+    .contact-band { grid-template-columns: 1fr; padding: 48px 24px; }
+    .ct-l { border-right: none; border-bottom: 1px solid var(--rule-dk); padding-right: 0; padding-bottom: 40px; margin-bottom: 40px; }
+    .ct-r { padding-left: 0; }
+    .sec-hd { padding: 16px 24px; }
+    .form-grid { grid-template-columns: 1fr; }
+    footer { padding: 16px 24px; flex-direction: column; gap: 12px; text-align: center; }
+  }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <h1>Homelab status</h1>
-  <div class="header-right">
-    <span class="last-updated" id="last-updated">Checking...</span>
-    <span class="overall-badge overall-ok" id="overall-badge">
-      <span class="dot dot-ok pulse" id="overall-dot"></span>
-      <span id="overall-label">Checking...</span>
-    </span>
+<!-- ── Nav ── -->
+<nav>
+  <a href="#" class="logo-lockup">
+    <svg width="28" height="28" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+      <rect x="1" y="1" width="15" height="15" stroke="#1A1A18" stroke-width="1.5"/>
+      <rect x="20" y="1" width="15" height="15" fill="#D4570A"/>
+      <rect x="1" y="20" width="15" height="15" fill="#1A1A18"/>
+      <rect x="20" y="20" width="15" height="15" stroke="#1A1A18" stroke-width="1.5"/>
+    </svg>
+    <div class="logo-text">
+      <span class="logo-word">PELSTOW</span>
+      <span class="logo-sub">Consulting</span>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="#services" class="nav-link">Services</a>
+    <a href="#sectors" class="nav-link">Sectors</a>
+    <a href="#about" class="nav-link">About</a>
+    <a href="#contact" class="nav-cta">Get in touch</a>
   </div>
-</div>
+</nav>
 
-<!-- INTERNET PI SERVICES -->
-<p class="section-title">Internet Pi &mdash; 192.168.0.53</p>
-<div class="grid">
-  <div class="card"><div class="card-header"><span class="card-name">Grafana</span><span class="dot dot-loading pulse" id="dot-grafana"></span></div><div class="card-meta">:3030</div><div class="status-label" id="status-grafana">Checking...</div></div>
-  <div class="card"><div class="card-header"><span class="card-name">Prometheus</span><span class="dot dot-loading pulse" id="dot-prometheus"></span></div><div class="card-meta">:9090</div><div class="status-label" id="status-prometheus">Checking...</div></div>
-  <div class="card"><div class="card-header"><span class="card-name">Node Exporter</span><span class="dot dot-loading pulse" id="dot-node"></span></div><div class="card-meta">:9110</div><div class="status-label" id="status-node">Checking...</div></div>
-  <div class="card"><div class="card-header"><span class="card-name">Speedtest</span><span class="dot-na"></span></div><div class="card-meta">:9798 · internal</div><div class="status-label">Via Prometheus</div></div>
-  <div class="card"><div class="card-header"><span class="card-name">Blackbox</span><span class="dot dot-loading pulse" id="dot-blackbox"></span></div><div class="card-meta">:9115</div><div class="status-label" id="status-blackbox">Checking...</div></div>
-  <div class="card"><div class="card-header"><span class="card-name">NUT Exporter</span><span class="dot dot-loading pulse" id="dot-nut"></span></div><div class="card-meta">:9199</div><div class="status-label" id="status-nut">Checking...</div></div>
-  <div class="card"><div class="card-header"><span class="card-name">Helpdesk</span><span class="dot dot-loading pulse" id="dot-helpdesk"></span></div><div class="card-meta">:5080</div><div class="status-label" id="status-helpdesk">Checking...</div></div>
-</div>
+<!-- ── Hero ── -->
+<section class="hero">
+  <div class="hero-l">
+    <div>
+      <div class="eyebrow">Boutique strategy consulting</div>
+      <h1 class="hero-h1">Markets<br>understood.<br><strong>Decisions</strong><br>made.</h1>
+    </div>
+    <div class="hero-tagline">Strategy · Markets · Intelligence · Analytics</div>
+  </div>
+  <div class="hero-r">
+    <p class="hero-body">Pelstow helps mid-market businesses navigate complex markets, define where they compete, and build strategies that hold up under pressure. Independent. Rigorous. Direct.</p>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-n">4</div>
+        <div class="stat-l">Practice areas</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n">Global</div>
+        <div class="stat-l">Market reach</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<!-- SYSTEM METRICS -->
-<p class="section-title">System metrics &mdash; Internet Pi</p>
-<div class="metrics-grid">
-  <div class="metric-card"><div class="metric-label">CPU</div><div class="metric-value" id="m-cpu">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-cpu" style="width:0%;background:#639922"></div></div></div>
-  <div class="metric-card"><div class="metric-label">Memory</div><div class="metric-value" id="m-mem">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-mem" style="width:0%;background:#639922"></div></div></div>
-  <div class="metric-card"><div class="metric-label">Disk</div><div class="metric-value" id="m-disk">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-disk" style="width:0%;background:#639922"></div></div></div>
-  <div class="metric-card"><div class="metric-label">Uptime</div><div class="metric-value" id="m-uptime" style="font-size:15px;">—</div></div>
-</div>
+<!-- ── Services ── -->
+<section id="services">
+  <div class="sec-hd">
+    <span class="label">What we do</span>
+    <span class="label" style="color: #D0CFC6;">Four practice areas</span>
+  </div>
+  <div class="svc-grid">
+    <div class="sc">
+      <div class="sn">01</div>
+      <div class="st">Strategy</div>
+      <div class="sd">Most strategies fail before they're executed — because they were built on consensus, not conviction. We work with leadership teams to make sharper choices about where to compete, what to stop doing, and how to build positions that are genuinely hard to replicate.</div>
+      <div class="tags">
+        <span class="tag">Market entry &amp; positioning</span>
+        <span class="tag">Portfolio decisions</span>
+        <span class="tag">Growth architecture</span>
+      </div>
+    </div>
+    <div class="sc">
+      <div class="sn">02</div>
+      <div class="st">Markets</div>
+      <div class="sd">Markets don't wait for your planning cycle. We provide the kind of commercial intelligence that changes how leadership teams see their competitive environment — who's moving, what's shifting, and where the real opportunity actually sits.</div>
+      <div class="tags">
+        <span class="tag">Competitive landscape</span>
+        <span class="tag">Customer segmentation</span>
+        <span class="tag">Opportunity mapping</span>
+      </div>
+    </div>
+    <div class="sc">
+      <div class="sn">03</div>
+      <div class="st">Intelligence</div>
+      <div class="sd">Most companies are reacting to information their competitors already have. We build ongoing intelligence capabilities — supplier, customer, and industry — that turn raw signal into structured insight before it becomes conventional wisdom.</div>
+      <div class="tags">
+        <span class="tag">Supplier &amp; customer intel</span>
+        <span class="tag">Industry signal tracking</span>
+        <span class="tag">Strategic monitoring</span>
+      </div>
+    </div>
+    <div class="sc">
+      <div class="sn">04</div>
+      <div class="st">Analytics</div>
+      <div class="sd">We turn data into decisions. Not dashboards, not decks — the answers that change how leadership teams think and where they act.</div>
+      <div class="tags">
+        <span class="tag">Commercial data modelling</span>
+        <span class="tag">Customer value analysis</span>
+        <span class="tag">Pricing &amp; margin insight</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-<p class="section-title">System metrics &mdash; Home Assistant (192.168.0.44)</p>
-<div class="metrics-grid">
-  <div class="metric-card"><div class="metric-label">CPU</div><div class="metric-value" id="m-ha-cpu">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-ha-cpu" style="width:0%;background:#639922"></div></div></div>
-  <div class="metric-card"><div class="metric-label">Memory</div><div class="metric-value" id="m-ha-mem">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-ha-mem" style="width:0%;background:#639922"></div></div></div>
-  <div class="metric-card"><div class="metric-label">Disk</div><div class="metric-value" id="m-ha-disk">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-ha-disk" style="width:0%;background:#639922"></div></div></div>
-  <div class="metric-card"><div class="metric-label">Uptime</div><div class="metric-value" id="m-ha-uptime" style="font-size:15px;">—</div></div>
-</div>
+<!-- ── Positioning ── -->
+<section id="about">
+  <div class="pos">
+    <div class="pos-l">
+      <div class="label" style="margin-bottom: 20px;">Our approach</div>
+      <div class="pos-bar"></div>
+      <div class="pos-h">We don't<br>over-engineer<br>the answer.</div>
+      <div class="pts">
+        <div class="pt"><span class="ptn">—</span><span class="ptx">Independent by design. No house view to protect.</span></div>
+        <div class="pt"><span class="ptn">—</span><span class="ptx">Boutique by choice. Senior attention, every time.</span></div>
+        <div class="pt"><span class="ptn">—</span><span class="ptx">We go to the market. Not just the data.</span></div>
+        <div class="pt"><span class="ptn">—</span><span class="ptx">If you can't act on it, it isn't finished.</span></div>
+      </div>
+    </div>
+    <div class="pos-r">
+      <div>
+        <div class="label" style="margin-bottom: 20px;">Why Pelstow</div>
+        <p class="pos-body">Large consultancies bring large teams, long timelines, and conclusions shaped by methodology. Pelstow works differently — closer to how an experienced operating executive thinks than how a consulting firm bills.<br><br>We work across industries where markets are complex, competition is structural, and the cost of a wrong call is high. Our clients are mid-market businesses that need rigorous answers fast, without the overhead. We keep engagements lean, focused, and built around the decision — not the deliverable.</p>
+      </div>
+      <div class="pullquote">
+        <div class="pq-text">"Built around the decision —<br>not the <em>deliverable.</em>"</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-<p class="section-title">System metrics &mdash; Pi-hole (192.168.0.47)</p>
-<div class="metrics-grid">
-  <div class="metric-card"><div class="metric-label">CPU</div><div class="metric-value" id="m-ph-cpu">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-ph-cpu" style="width:0%;background:#639922"></div></div></div>
-  <div class="metric-card"><div class="metric-label">Memory</div><div class="metric-value" id="m-ph-mem">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-ph-mem" style="width:0%;background:#639922"></div></div></div>
-  <div class="metric-card"><div class="metric-label">Disk</div><div class="metric-value" id="m-ph-disk">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-ph-disk" style="width:0%;background:#639922"></div></div></div>
-  <div class="metric-card"><div class="metric-label">Uptime</div><div class="metric-value" id="m-ph-uptime" style="font-size:15px;">—</div></div>
-</div>
+<!-- ── Sectors ── -->
+<section id="sectors">
+  <div class="sec-hd">
+    <span class="label">Sectors we know</span>
+    <span class="label" style="color: #D0CFC6;">Where we work</span>
+  </div>
+  <div class="mkt-grid">
+    <div class="mc">
+      <div class="mbar"><div class="mfill" style="width:85%;"></div></div>
+      <div class="ml">Mobility &amp; Automotive</div>
+      <div class="md">One of the most structurally complex industries on earth — and one of the most consequential to get wrong. We understand the supply chain structure, the relationships that hold it together, and who influences at every level — including how electrification and new commercial pressures are reshaping it.</div>
+      <div class="tags" style="margin-top: 20px;">
+        <span class="tag">OEM &amp; tier strategy</span>
+        <span class="tag">Electrification transition</span>
+        <span class="tag">Supply chain intelligence</span>
+      </div>
+    </div>
+    <div class="mc">
+      <div class="mbar"><div class="mfill" style="width:65%;"></div></div>
+      <div class="ml">Electrical &amp; Electronics</div>
+      <div class="md">Demand is accelerating and the competitive landscape is shifting faster than most roadmaps can track. We help businesses understand where the market is going, who's winning, and what it takes to hold a defensible position in a sector that doesn't slow down.</div>
+      <div class="tags" style="margin-top: 20px;">
+        <span class="tag">Market positioning</span>
+        <span class="tag">Demand intelligence</span>
+        <span class="tag">Competitive landscape</span>
+      </div>
+    </div>
+    <div class="mc">
+      <div class="mbar"><div class="mfill" style="width:50%;"></div></div>
+      <div class="ml">Industrial &amp; Emerging</div>
+      <div class="md">The most interesting opportunities rarely sit inside your existing market. We work with businesses entering adjacent sectors — helping them move fast, avoid the obvious mistakes, and build positions before the market prices them in.</div>
+      <div class="tags" style="margin-top: 20px;">
+        <span class="tag">Adjacent market entry</span>
+        <span class="tag">Opportunity assessment</span>
+        <span class="tag">Early position strategy</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-<!-- UPS -->
-<p class="section-title">UPS &mdash; Tripp Lite (09AE:2012)</p>
-<div class="metrics-grid" style="margin-bottom:0.5rem">
-  <div class="metric-card"><div class="metric-label">Battery charge</div><div class="metric-value" id="m-bat">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-bat" style="width:0%;background:#639922"></div></div></div>
-  <div class="metric-card"><div class="metric-label">Runtime left</div><div class="metric-value" id="m-runtime" style="font-size:15px;">—</div></div>
-  <div class="metric-card"><div class="metric-label">Load</div><div class="metric-value" id="m-upsload">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-upsload" style="width:0%;background:#639922"></div></div></div>
-  <div class="metric-card"><div class="metric-label">Input voltage</div><div class="metric-value" id="m-vin">—<span class="metric-unit"> V</span></div></div>
-</div>
+<!-- ── Contact ── -->
+<section id="contact" class="contact-band">
+  <div class="ct-l">
+    <div>
+      <div class="label-dk" style="margin-bottom: 20px;">Get in touch</div>
+      <div class="ct-h">Let's talk about<br>what you're<br>trying to solve.</div>
+      <p class="ct-body">We don't do long sales processes. If there's a fit, we'll know quickly — and if there isn't, we'll tell you that too. Either way, it starts with a conversation.</p>
+    </div>
+    <div>
+      <div class="label-dk" style="margin-bottom: 16px;">Engagement types</div>
+      <div style="display: flex; flex-direction: column;">
+        <div style="display:flex;gap:12px;padding:10px 0;border-top:0.5px solid var(--rule-dk);align-items:baseline;"><span style="font-family:var(--mono);font-size:8px;color:var(--braun);min-width:16px;">—</span><span style="font-size:11px;color:var(--muted-dk);font-weight:300;">Market assessment</span></div>
+        <div style="display:flex;gap:12px;padding:10px 0;border-top:0.5px solid var(--rule-dk);align-items:baseline;"><span style="font-family:var(--mono);font-size:8px;color:var(--braun);min-width:16px;">—</span><span style="font-size:11px;color:var(--muted-dk);font-weight:300;">Strategy review</span></div>
+        <div style="display:flex;gap:12px;padding:10px 0;border-top:0.5px solid var(--rule-dk);align-items:baseline;"><span style="font-family:var(--mono);font-size:8px;color:var(--braun);min-width:16px;">—</span><span style="font-size:11px;color:var(--muted-dk);font-weight:300;">Commercial due diligence</span></div>
+        <div style="display:flex;gap:12px;padding:10px 0;border-top:0.5px solid var(--rule-dk);align-items:baseline;"><span style="font-family:var(--mono);font-size:8px;color:var(--braun);min-width:16px;">—</span><span style="font-size:11px;color:var(--muted-dk);font-weight:300;">Advisory retainer</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="ct-r">
+    <div id="contact-form-wrap">
+      <div class="label-dk" style="margin-bottom: 20px;">Send a message</div>
+      <form id="contact-form" novalidate>
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="f-name">Name</label>
+            <input type="text" id="f-name" name="name" placeholder="Your name" required>
+          </div>
+          <div class="form-field">
+            <label for="f-company">Company</label>
+            <input type="text" id="f-company" name="company" placeholder="Your company">
+          </div>
+          <div class="form-field full">
+            <label for="f-email">Email</label>
+            <input type="email" id="f-email" name="email" placeholder="your@email.com" required>
+          </div>
+          <div class="form-field full">
+            <label for="f-message">Message</label>
+            <textarea id="f-message" name="message" placeholder="Tell us what you're working on..." required></textarea>
+          </div>
+        </div>
+        <label class="human-check">
+          <input type="checkbox" id="f-human">
+          <span>I'm not a robot</span>
+        </label>
+        <button type="submit" class="form-submit" id="f-submit" disabled>Send message</button>
+      </form>
+    </div>
+    <div class="form-success" id="form-success">
+      <div class="fs-icon">
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M1 6L5.5 10.5L15 1" stroke="#F5F4F0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <p>Message sent — we'll be in touch shortly.</p>
+    </div>
+  </div>
+</section>
 
-<!-- PI-HOLE & INTERNET SPEED -->
-<p class="section-title">Pi-hole &mdash; 192.168.0.47</p>
-<div class="host-card">
-  <div class="host-header">
-    <div><div class="host-name">Pi-hole</div><div class="host-ip">192.168.0.47</div></div>
-    <div class="host-status"><span class="dot-na"></span><span class="status-label">Via node exporter</span></div>
-  </div>
-  <div class="services-row">
-    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Admin UI</span><span class="svc-chip-port">:80/admin</span></div><span class="dot dot-loading pulse" id="dot-pihole-admin"></span></div>
-    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Total queries</span><span class="svc-chip-port">today</span></div><span style="font-size:13px;font-weight:500" id="ph-queries">—</span></div>
-    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Blocked</span><span class="svc-chip-port">today</span></div><span style="font-size:13px;font-weight:500" id="ph-blocked">—</span></div>
-    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Block %</span><span class="svc-chip-port">today</span></div><span style="font-size:13px;font-weight:500" id="ph-pct">—</span></div>
-    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Blocklist</span><span class="svc-chip-port">domains</span></div><span style="font-size:13px;font-weight:500" id="ph-list">—</span></div>
-  </div>
-</div>
-
-<p class="section-title">Internet speed (via Speedtest Exporter)</p>
-<div class="metrics-grid" style="margin-bottom:0.5rem">
-  <div class="metric-card"><div class="metric-label">Download</div><div class="metric-value" id="m-dl">—<span class="metric-unit"> Mbps</span></div></div>
-  <div class="metric-card"><div class="metric-label">Upload</div><div class="metric-value" id="m-ul">—<span class="metric-unit"> Mbps</span></div></div>
-  <div class="metric-card"><div class="metric-label">Ping</div><div class="metric-value" id="m-ping">—<span class="metric-unit"> ms</span></div></div>
-  <div class="metric-card"><div class="metric-label">Last tested</div><div class="metric-value" id="m-speedtime" style="font-size:14px;">—</div></div>
-</div>
-
-<!-- COMPUTERS -->
-<p class="section-title">Computers</p>
-
-<div class="host-card">
-  <div class="host-header">
-    <div><div class="host-name">Mac Mini (MAC-SERVER)</div><div class="host-ip">192.168.0.116</div></div>
-    <div class="host-status"><span class="dot dot-loading pulse" id="dot-macmini"></span><span class="status-label" id="status-macmini">Checking...</span></div>
-  </div>
-  <div class="services-row">
-    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">SimpleLogin</span><span class="svc-chip-port">:7777</span></div><span class="dot dot-loading pulse" id="dot-simplelogin"></span></div>
-    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Open WebUI</span><span class="svc-chip-port">:8080</span></div><span class="dot dot-loading pulse" id="dot-macmini-webui"></span></div>
-    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Get It server</span><span class="svc-chip-port">:9876</span></div><span class="dot dot-loading pulse" id="dot-getit"></span></div>
-  </div>
-  <div class="host-metrics-grid">
-    <div class="host-metric-card"><div class="metric-label">CPU</div><div class="host-metric-value" id="m-mm-cpu">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-mm-cpu" style="width:0%;background:#639922"></div></div></div>
-    <div class="host-metric-card"><div class="metric-label">Memory</div><div class="host-metric-value" id="m-mm-mem">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-mm-mem" style="width:0%;background:#639922"></div></div></div>
-    <div class="host-metric-card"><div class="metric-label">Disk</div><div class="host-metric-value" id="m-mm-disk">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-mm-disk" style="width:0%;background:#639922"></div></div></div>
-    <div class="host-metric-card"><div class="metric-label">Uptime</div><div class="host-metric-value" id="m-mm-uptime" style="font-size:13px;">—</div></div>
-  </div>
-</div>
-
-<div class="host-card">
-  <div class="host-header">
-    <div><div class="host-name">Mac Studio (M3 Ultra)</div><div class="host-ip">192.168.0.38</div></div>
-    <div class="host-status"><span class="dot dot-loading pulse" id="dot-ultra"></span><span class="status-label" id="status-ultra">Checking...</span></div>
-  </div>
-  <div class="services-row">
-    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Ollama</span><span class="svc-chip-port">:11434</span></div><span class="dot dot-loading pulse" id="dot-ollama"></span></div>
-    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Open WebUI</span><span class="svc-chip-port">:8080</span></div><span class="dot dot-loading pulse" id="dot-openwebui"></span></div>
-    <div class="svc-chip svc-chip-na"><div class="svc-chip-left"><span class="svc-chip-name">Whisper STT</span><span class="svc-chip-port">:10300 · Wyoming</span></div><span class="dot-na"></span></div>
-    <div class="svc-chip svc-chip-na"><div class="svc-chip-left"><span class="svc-chip-name">Piper TTS</span><span class="svc-chip-port">:10200 · Wyoming</span></div><span class="dot-na"></span></div>
-  </div>
-  <div class="host-metrics-grid">
-    <div class="host-metric-card"><div class="metric-label">CPU</div><div class="host-metric-value" id="m-ms-cpu">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-ms-cpu" style="width:0%;background:#639922"></div></div></div>
-    <div class="host-metric-card"><div class="metric-label">Memory</div><div class="host-metric-value" id="m-ms-mem">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-ms-mem" style="width:0%;background:#639922"></div></div></div>
-    <div class="host-metric-card"><div class="metric-label">Disk</div><div class="host-metric-value" id="m-ms-disk">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-ms-disk" style="width:0%;background:#639922"></div></div></div>
-    <div class="host-metric-card"><div class="metric-label">Uptime</div><div class="host-metric-value" id="m-ms-uptime" style="font-size:13px;">—</div></div>
-  </div>
-</div>
-
-<div class="host-card">
-  <div class="host-header">
-    <div><div class="host-name">UNAS Pro NAS</div><div class="host-ip">192.168.0.127</div></div>
-    <div class="host-status"><span class="dot dot-loading pulse" id="dot-unas"></span><span class="status-label" id="status-unas">Checking...</span></div>
-  </div>
-  <div class="services-row">
-    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Web UI</span><span class="svc-chip-port">:80</span></div><span class="dot dot-loading pulse" id="dot-unas-ui"></span></div>
-    <div class="svc-chip svc-chip-na"><div class="svc-chip-left"><span class="svc-chip-name">SMB (FILES)</span><span class="svc-chip-port">:445 · TCP only</span></div><span class="dot-na"></span></div>
-  </div>
-  <div class="host-metrics-grid">
-    <div class="host-metric-card"><div class="metric-label">CPU</div><div class="host-metric-value" id="m-nas-cpu">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-nas-cpu" style="width:0%;background:#639922"></div></div></div>
-    <div class="host-metric-card"><div class="metric-label">Memory</div><div class="host-metric-value" id="m-nas-mem">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-nas-mem" style="width:0%;background:#639922"></div></div></div>
-    <div class="host-metric-card"><div class="metric-label">Disk</div><div class="host-metric-value" id="m-nas-disk">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-nas-disk" style="width:0%;background:#639922"></div></div></div>
-    <div class="host-metric-card"><div class="metric-label">Uptime</div><div class="host-metric-value" id="m-nas-uptime" style="font-size:13px;">—</div></div>
-  </div>
-</div>
-
-<div class="host-card">
-  <div class="host-header">
-    <div><div class="host-name">UDM Pro</div><div class="host-ip">192.168.0.1</div></div>
-    <div class="host-status"><span class="dot dot-loading pulse" id="dot-udm"></span><span class="status-label" id="status-udm">Checking...</span></div>
-  </div>
-  <div class="host-metrics-grid">
-    <div class="host-metric-card"><div class="metric-label">CPU</div><div class="host-metric-value" id="m-udm-cpu">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-udm-cpu" style="width:0%;background:#639922"></div></div></div>
-    <div class="host-metric-card"><div class="metric-label">Memory</div><div class="host-metric-value" id="m-udm-mem">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-udm-mem" style="width:0%;background:#639922"></div></div></div>
-    <div class="host-metric-card"><div class="metric-label">Disk</div><div class="host-metric-value" id="m-udm-disk">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-udm-disk" style="width:0%;background:#639922"></div></div></div>
-    <div class="host-metric-card"><div class="metric-label">Uptime</div><div class="host-metric-value" id="m-udm-uptime" style="font-size:13px;">—</div></div>
-  </div>
-</div>
-
-<div class="host-card" style="margin-bottom:0.5rem">
-  <div class="host-header">
-    <div><div class="host-name">NVR (UNVR)</div><div class="host-ip">192.168.0.142</div></div>
-    <div class="host-status"><span class="dot dot-loading pulse" id="dot-nvr"></span><span class="status-label" id="status-nvr">Checking...</span></div>
-  </div>
-  <div class="host-metrics-grid">
-    <div class="host-metric-card"><div class="metric-label">CPU</div><div class="host-metric-value" id="m-nvr-cpu">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-nvr-cpu" style="width:0%;background:#639922"></div></div></div>
-    <div class="host-metric-card"><div class="metric-label">Memory</div><div class="host-metric-value" id="m-nvr-mem">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-nvr-mem" style="width:0%;background:#639922"></div></div></div>
-    <div class="host-metric-card"><div class="metric-label">Disk</div><div class="host-metric-value" id="m-nvr-disk">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-nvr-disk" style="width:0%;background:#639922"></div></div></div>
-    <div class="host-metric-card"><div class="metric-label">Uptime</div><div class="host-metric-value" id="m-nvr-uptime" style="font-size:13px;">—</div></div>
-  </div>
-</div>
-
-<!-- INTERNET PROBES -->
-<p class="section-title">Internet probes (via Blackbox Exporter)</p>
-<div class="section-card">
-  <table class="probe-table">
-    <thead><tr><th>Host</th><th>Status</th><th>Latency</th></tr></thead>
-    <tbody id="probe-tbody">
-      <tr><td>Google</td><td><span class="pill pill-na">—</span></td><td class="latency">—</td></tr>
-      <tr><td>GitHub</td><td><span class="pill pill-na">—</span></td><td class="latency">—</td></tr>
-      <tr><td>Apple</td><td><span class="pill pill-na">—</span></td><td class="latency">—</td></tr>
-      <tr><td>Cloudflare</td><td><span class="pill pill-na">—</span></td><td class="latency">—</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class="footer">
-  <span class="footer-note">Auto-refreshes every 30s &mdash; Prometheus metrics require --web.cors.origin=.* on :9090</span>
-  <button class="refresh-btn" onclick="runAll()">Refresh now</button>
-</div>
+<!-- ── Footer ── -->
+<footer>
+  <a href="#" class="logo-lockup" style="text-decoration:none;">
+    <svg width="18" height="18" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+      <rect x="1" y="1" width="15" height="15" stroke="#4A4A44" stroke-width="1.5"/>
+      <rect x="20" y="1" width="15" height="15" fill="#D4570A"/>
+      <rect x="1" y="20" width="15" height="15" fill="#4A4A44"/>
+      <rect x="20" y="20" width="15" height="15" stroke="#4A4A44" stroke-width="1.5"/>
+    </svg>
+    <span class="ft" style="letter-spacing:0.12em;">PELSTOW</span>
+  </a>
+  <span class="ft">© 2025 Pelstow Consulting</span>
+  <span class="ft">pelstow.com</span>
+</footer>
 
 <script>
-var PI      = '192.168.0.53';
-var PROM    = 'http://' + PI + ':9090/api/v1/query';
-var PIHOLE  = 'http://192.168.0.47';
-var PIHOLE_API_KEY = 'fp8Q3+26UABgZyAUTLIoy3Fc7IWSNd0NXOTaSwsJV7U=';
+  const humanCheck = document.getElementById('f-human');
+  const submitBtn  = document.getElementById('f-submit');
+  const form       = document.getElementById('contact-form');
+  const formWrap   = document.getElementById('contact-form-wrap');
+  const successMsg = document.getElementById('form-success');
 
-var piServices = [
-  { id: 'grafana',    host: PI, port: 3030, path: '/api/health' },
-  { id: 'prometheus', host: PI, port: 9090, path: '/-/healthy' },
-  { id: 'node',       host: PI, port: 9110, path: '/metrics' },
-  { id: 'blackbox',   host: PI, port: 9115, path: '/metrics' },
-  { id: 'nut',        host: PI, port: 9199, path: '/metrics' },
-  { id: 'helpdesk',   host: PI, port: 5080, path: '/' },
-];
+  humanCheck.addEventListener('change', () => {
+    submitBtn.disabled = !humanCheck.checked;
+  });
 
-var hostChecks = [
-  { id: 'macmini', host: '192.168.0.116', port: 7777  },
-  { id: 'ultra',   host: '192.168.0.38',  port: 11434 },
-  { id: 'unas',    host: '192.168.0.127', port: 80    },
-  { id: 'udm',     host: '192.168.0.1',   port: 9100  },
-  { id: 'nvr',     host: '192.168.0.142', port: 9100  },
-];
-
-var subServices = [
-  { id: 'pihole-admin',  host: '192.168.0.47',  port: 80,    path: '/admin/' },
-  { id: 'simplelogin',   host: '192.168.0.116', port: 7777,  path: '/' },
-  { id: 'macmini-webui', host: '192.168.0.116', port: 8080,  path: '/' },
-  { id: 'getit',         host: '192.168.0.116', port: 9876,  path: '/' },
-  { id: 'ollama',        host: '192.168.0.38',  port: 11434, path: '/' },
-  { id: 'openwebui',     host: '192.168.0.38',  port: 8080,  path: '/' },
-  { id: 'unas-ui',       host: '192.168.0.127', port: 80,    path: '/' },
-];
-
-var probeHosts = [
-  { name: 'Google',     target: 'https://www.google.com/' },
-  { name: 'GitHub',     target: 'https://github.com/' },
-  { name: 'Apple',      target: 'https://www.apple.com/' },
-  { name: 'Cloudflare', target: 'https://1.1.1.1/' },
-];
-
-function setDot(id, state) {
-  var el = document.getElementById('dot-' + id);
-  if (!el) return;
-  var map = { ok: 'dot dot-ok', err: 'dot dot-err', warn: 'dot dot-warn', loading: 'dot dot-loading pulse' };
-  el.className = map[state] || 'dot dot-loading pulse';
-}
-function setStatus(id, state, text) {
-  var el = document.getElementById('status-' + id);
-  if (!el) return;
-  el.className = 'status-label' + (state && state !== 'loading' ? ' status-label-' + state : '');
-  el.textContent = text;
-}
-async function ping(host, port, path) {
-  path = path || '/';
-  try {
-    await fetch('http://' + host + ':' + port + path, { method: 'HEAD', mode: 'no-cors', signal: AbortSignal.timeout(4000) });
-    return 'ok';
-  } catch(e) { return 'err'; }
-}
-async function checkPiService(s) {
-  var state = await ping(s.host, s.port, s.path);
-  setDot(s.id, state); setStatus(s.id, state, state === 'ok' ? 'Online' : 'Unreachable');
-  return state;
-}
-async function checkHost(h) {
-  var state = await ping(h.host, h.port, '/');
-  setDot(h.id, state); setStatus(h.id, state, state === 'ok' ? 'Online' : 'Unreachable');
-  return state;
-}
-async function checkSub(s) {
-  var state = await ping(s.host, s.port, s.path);
-  setDot(s.id, state);
-}
-
-async function promQuery(expr) {
-  try {
-    var r = await fetch(PROM + '?query=' + encodeURIComponent(expr), { signal: AbortSignal.timeout(5000) });
-    var j = await r.json();
-    if (j.status === 'success' && j.data.result.length > 0) return parseFloat(j.data.result[0].value[1]);
-    return null;
-  } catch(e) { return null; }
-}
-
-// gradient: green(0%) -> yellow(50%) -> red(100% usage)
-// for battery: inverted — green at 100%, red at 0%
-function gradientColor(pct, invert) {
-  var p = invert ? (100 - pct) : pct;
-  var r, g;
-  if (p <= 50) {
-    r = Math.round(99 + (186 - 99) * (p / 50));
-    g = Math.round(153 - (153 - 115) * (p / 50));
-  } else {
-    r = Math.round(186 + (226 - 186) * ((p - 50) / 50));
-    g = Math.round(115 * (1 - (p - 50) / 50));
-  }
-  return 'rgb(' + r + ',' + g + ',34)';
-}
-
-function setGradientBar(id, pct, invert) {
-  var el = document.getElementById('bar-' + id);
-  if (!el) return;
-  el.style.width = Math.min(100, Math.round(pct)) + '%';
-  el.style.background = gradientColor(pct, invert || false);
-}
-
-function setMetric(id, val, decimals, raw) {
-  var el = document.getElementById('m-' + id);
-  if (!el) return;
-  var unit = el.querySelector('.metric-unit');
-  var unitHTML = unit ? unit.outerHTML : '';
-  if (val === null || val === undefined) { el.innerHTML = '&mdash;' + unitHTML; return; }
-  if (raw) { el.innerHTML = val + unitHTML; return; }
-  el.innerHTML = parseFloat(val).toFixed(typeof decimals === 'number' ? decimals : 0) + unitHTML;
-}
-
-function fmtUptime(secs) {
-  var d = Math.floor(secs/86400), h = Math.floor((secs%86400)/3600), m = Math.floor((secs%3600)/60);
-  return d+'d '+h+'h '+m+'m';
-}
-
-async function loadHostMetrics(prefix, host) {
-  var cpu = await promQuery('100 - (avg(irate(node_cpu_seconds_total{job="node",host="'+host+'",mode="idle"}[5m])) * 100)');
-  if (cpu !== null) { setMetric(prefix+'-cpu', cpu, 1); setGradientBar(prefix+'-cpu', cpu); }
-  var memT = await promQuery('node_memory_MemTotal_bytes{job="node",host="'+host+'"}');
-  var memA = await promQuery('node_memory_MemAvailable_bytes{job="node",host="'+host+'"}');
-  if (memT && memA) { var mp = (1-memA/memT)*100; setMetric(prefix+'-mem', mp, 1); setGradientBar(prefix+'-mem', mp); }
-  var diskT = await promQuery('node_filesystem_size_bytes{job="node",host="'+host+'",mountpoint="/"}');
-  var diskF = await promQuery('node_filesystem_free_bytes{job="node",host="'+host+'",mountpoint="/"}');
-  if (diskT && diskF) { var dp = (1-diskF/diskT)*100; setMetric(prefix+'-disk', dp, 1); setGradientBar(prefix+'-disk', dp); }
-  var upt = await promQuery('node_time_seconds{job="node",host="'+host+'"} - node_boot_time_seconds{job="node",host="'+host+'"}');
-  if (upt !== null) setMetric(prefix+'-uptime', fmtUptime(upt), null, true);
-}
-
-async function loadPiholeStats() {
-  try {
-    var r = await fetch(PIHOLE + '/admin/api.php?summaryRaw&auth=' + encodeURIComponent(PIHOLE_API_KEY), { signal: AbortSignal.timeout(5000) });
-    var j = await r.json();
-    document.getElementById('ph-queries').textContent = j.dns_queries_today ? j.dns_queries_today.toLocaleString() : '—';
-    document.getElementById('ph-blocked').textContent = j.ads_blocked_today ? j.ads_blocked_today.toLocaleString() : '—';
-    document.getElementById('ph-pct').textContent = j.ads_percentage_today ? j.ads_percentage_today.toFixed(1)+'%' : '—';
-    document.getElementById('ph-list').textContent = j.domains_being_blocked ? j.domains_being_blocked.toLocaleString() : '—';
-  } catch(e) {
-    document.getElementById('ph-queries').textContent = '—';
-    document.getElementById('ph-blocked').textContent = '—';
-    document.getElementById('ph-pct').textContent = '—';
-    document.getElementById('ph-list').textContent = '—';
-  }
-}
-
-async function loadSpeedtest() {
-  var dl = await promQuery('speedtest_download_bits_per_second');
-  if (dl !== null) setMetric('dl', dl/1e6, 1);
-  var ul = await promQuery('speedtest_upload_bits_per_second');
-  if (ul !== null) setMetric('ul', ul/1e6, 1);
-  var ping = await promQuery('speedtest_ping_latency_milliseconds');
-  if (ping !== null) setMetric('ping', ping, 0);
-  var ts = await promQuery('speedtest_scrape_duration_seconds');
-  if (ts !== null) {
-    var d = new Date((Date.now() - ts * 1000));
-    setMetric('speedtime', d.toLocaleTimeString(), null, true);
-  }
-}
-
-async function loadMetrics() {
-  await Promise.all([
-    loadHostMetrics('cpu', 'PRIMARY'),   // reuse prefix trick
-    loadHostMetrics('ha', 'HOMEASSIST'),
-    loadHostMetrics('ph', 'PIHOLE'),
-    loadHostMetrics('mm', 'MACMINI'),
-    loadHostMetrics('ms', 'MACSTUDIO'),
-    loadHostMetrics('nas', 'UNAS'),
-    loadHostMetrics('udm', 'UDMPRO'),
-    loadHostMetrics('nvr', 'NVR'),
-    loadSpeedtest(),
-    loadPiholeStats(),
-  ]);
-
-  // UPS — battery inverted gradient (green=full, red=empty)
-  var bat = await promQuery('network_ups_tools_battery_charge');
-  if (bat !== null) { setMetric('bat', bat, 0); setGradientBar('bat', bat, true); }
-  var rt = await promQuery('network_ups_tools_battery_runtime');
-  if (rt !== null) setMetric('runtime', Math.floor(rt/60)+' min', null, true);
-  var upsload = await promQuery('network_ups_tools_ups_load');
-  if (upsload !== null) { setMetric('upsload', upsload, 1); setGradientBar('upsload', upsload); }
-  var vin = await promQuery('network_ups_tools_input_voltage');
-  if (vin !== null) setMetric('vin', vin, 1);
-}
-
-// Fix: PRIMARY host uses different prefix mapping
-var origLoadHostMetrics = loadHostMetrics;
-async function loadAllHostMetrics() {
-  var cpu = await promQuery('100 - (avg(irate(node_cpu_seconds_total{job="node",host="PRIMARY",mode="idle"}[5m])) * 100)');
-  if (cpu !== null) { setMetric('cpu', cpu, 1); setGradientBar('cpu', cpu); }
-  var memT = await promQuery('node_memory_MemTotal_bytes{job="node",host="PRIMARY"}');
-  var memA = await promQuery('node_memory_MemAvailable_bytes{job="node",host="PRIMARY"}');
-  if (memT && memA) { var mp=(1-memA/memT)*100; setMetric('mem', mp, 1); setGradientBar('mem', mp); }
-  var diskT = await promQuery('node_filesystem_size_bytes{job="node",host="PRIMARY",mountpoint="/"}');
-  var diskF = await promQuery('node_filesystem_free_bytes{job="node",host="PRIMARY",mountpoint="/"}');
-  if (diskT && diskF) { var dp=(1-diskF/diskT)*100; setMetric('disk', dp, 1); setGradientBar('disk', dp); }
-  var upt = await promQuery('node_time_seconds{job="node",host="PRIMARY"} - node_boot_time_seconds{job="node",host="PRIMARY"}');
-  if (upt !== null) setMetric('uptime', fmtUptime(upt), null, true);
-
-  await Promise.all([
-    loadHostMetrics('ha', 'HOMEASSIST'),
-    loadHostMetrics('ph', 'PIHOLE'),
-    loadHostMetrics('mm', 'MACMINI'),
-    loadHostMetrics('ms', 'MACSTUDIO'),
-    loadHostMetrics('nas', 'UNAS'),
-    loadHostMetrics('udm', 'UDMPRO'),
-    loadHostMetrics('nvr', 'NVR'),
-    loadSpeedtest(),
-    loadPiholeStats(),
-  ]);
-
-  // UPS
-  var bat = await promQuery('network_ups_tools_battery_charge');
-  if (bat !== null) { setMetric('bat', bat, 0); setGradientBar('bat', bat, true); }
-  var rt = await promQuery('network_ups_tools_battery_runtime');
-  if (rt !== null) setMetric('runtime', Math.floor(rt/60)+' min', null, true);
-  var upsload = await promQuery('network_ups_tools_ups_load');
-  if (upsload !== null) { setMetric('upsload', upsload, 1); setGradientBar('upsload', upsload); }
-  var vin = await promQuery('network_ups_tools_input_voltage');
-  if (vin !== null) setMetric('vin', vin, 1);
-}
-
-async function loadProbes() {
-  var tbody = document.getElementById('probe-tbody');
-  for (var i = 0; i < probeHosts.length; i++) {
-    var h = probeHosts[i];
-    var ok  = await promQuery('probe_success{instance="' + h.target + '"}');
-    var dur = await promQuery('probe_duration_seconds{instance="' + h.target + '"}');
-    var row = tbody.rows[i];
-    if (!row) continue;
-    var pillClass = ok === null ? 'pill-na' : ok === 1 ? 'pill-ok' : 'pill-err';
-    var pillText  = ok === null ? '&mdash;' : ok === 1 ? 'Up' : 'Down';
-    row.cells[1].innerHTML = '<span class="pill ' + pillClass + '">' + pillText + '</span>';
-    row.cells[2].textContent = dur !== null ? Math.round(dur*1000)+' ms' : '—';
-  }
-}
-
-async function runAll() {
-  document.getElementById('last-updated').textContent = 'Refreshing...';
-  var piResults   = await Promise.all(piServices.map(checkPiService));
-  var hostResults = await Promise.all(hostChecks.map(checkHost));
-  await Promise.all(subServices.map(checkSub));
-  await Promise.all([loadAllHostMetrics(), loadProbes()]);
-
-  var all = piResults.concat(hostResults);
-  var errCount = all.filter(function(r){ return r === 'err'; }).length;
-  var badge = document.getElementById('overall-badge');
-  var dot   = document.getElementById('overall-dot');
-  var label = document.getElementById('overall-label');
-  if (errCount === 0) {
-    badge.className = 'overall-badge overall-ok'; dot.className = 'dot dot-ok pulse';
-    label.textContent = 'All systems nominal';
-  } else if (errCount <= 3) {
-    badge.className = 'overall-badge overall-warn'; dot.className = 'dot dot-warn pulse';
-    label.textContent = errCount + ' host' + (errCount > 1 ? 's' : '') + ' unreachable';
-  } else {
-    badge.className = 'overall-badge overall-err'; dot.className = 'dot dot-err pulse';
-    label.textContent = errCount + ' hosts down';
-  }
-  document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString();
-}
-
-runAll();
-setInterval(runAll, 30000);
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name    = document.getElementById('f-name').value.trim();
+    const email   = document.getElementById('f-email').value.trim();
+    const message = document.getElementById('f-message').value.trim();
+    if (!name || !email || !message) return;
+    formWrap.style.display = 'none';
+    successMsg.style.display = 'block';
+  });
 </script>
+
 </body>
 </html>
