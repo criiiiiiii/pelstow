@@ -303,7 +303,7 @@
   <div class="ct-r">
     <div id="contact-form-wrap">
       <div class="clbl">Send a message</div>
-      <form id="contact-form" novalidate>
+      <form id="contact-form" action="https://formspree.io/f/mpqbzoar" method="POST" novalidate>
         <div class="form-grid">
           <div class="form-field">
             <label for="f-name">Name</label>
@@ -363,14 +363,38 @@
     submitBtn.disabled = !humanCheck.checked;
   });
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const name    = document.getElementById('f-name').value.trim();
     const email   = document.getElementById('f-email').value.trim();
     const message = document.getElementById('f-message').value.trim();
     if (!name || !email || !message) return;
-    formWrap.style.display = 'none';
-    successMsg.style.display = 'block';
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
+    const data = new FormData(form);
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (response.ok) {
+        formWrap.style.display = 'none';
+        successMsg.style.display = 'block';
+      } else {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send message';
+        alert('Something went wrong. Please try again or email us directly.');
+      }
+    } catch (err) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send message';
+      alert('Something went wrong. Please try again or email us directly.');
+    }
   });
 </script>
 
