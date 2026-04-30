@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homelab Status</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f5f3; --bg2: #ffffff; --bg3: #eeede9;
+    --text: #1a1a18; --text2: #555550; --text3: #999990;
+    --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.22);
+    --radius-md: 8px; --radius-lg: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a18; --bg2: #242422; --bg3: #2e2e2c;
+      --text: #f0efea; --text2: #aaa9a0; --text3: #666660;
+      --border: rgba(255,255,255,0.10); --border2: rgba(255,255,255,0.20);
+    }
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 1.5rem; font-size: 14px; }
+  h1 { font-size: 20px; font-weight: 500; }
+  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 12px; }
+  .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .last-updated { font-size: 12px; color: var(--text3); }
+  .overall-badge { display: flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 999px; font-size: 13px; font-weight: 500; }
+  .overall-ok   { background: #EAF3DE; color: #3B6D11; }
+  .overall-warn { background: #FAEEDA; color: #854F0B; }
+  .overall-err  { background: #FCEBEB; color: #A32D2D; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+  .dot-ok      { background: #639922; }
+  .dot-warn    { background: #BA7517; }
+  .dot-err     { background: #E24B4A; }
+  .dot-loading { background: #aaa; }
+  .dot-na      { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; display: inline-block; background: var(--text3); }
+  .pulse { animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
+  .section-title { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; margin-top: 1.5rem; }
+  .section-title:first-of-type { margin-top: 0; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+  .card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+  .card-header { display: flex; align-items: center; justify-content: space-between; }
+  .card-name { font-size: 13px; font-weight: 500; }
+  .card-meta { font-size: 11px; color: var(--text3); }
+  .status-label { font-size: 12px; color: var(--text2); }
+  .status-label-ok   { color: #3B6D11; }
+  .status-label-err  { color: #A32D2D; }
+  .status-label-warn { color: #854F0B; }
+  .host-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px 18px; margin-bottom: 10px; }
+  .host-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .host-name { font-size: 14px; font-weight: 500; }
+  .host-ip { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .host-status { display: flex; align-items: center; gap: 6px; }
+  .services-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-bottom: 10px; }
+  .services-row:last-child { margin-bottom: 0; }
+  .svc-chip { display: flex; align-items: center; justify-content: space-between; background: var(--bg3); border-radius: var(--radius-md); padding: 8px 12px; gap: 8px; }
+  .svc-chip-left { display: flex; flex-direction: column; gap: 2px; }
+  .svc-chip-name { font-size: 12px; font-weight: 500; }
+  .svc-chip-port { font-size: 11px; color: var(--text3); }
+  .svc-chip-na { opacity: 0.5; }
+  .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+  .host-metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; margin-top: 10px; }
+  .metric-card { background: var(--bg3); border-radius: var(--radius-md); padding: 12px 14px; }
+  .host-metric-card { background: var(--bg3); border-radius: var(--radius-md); padding: 10px 12px; }
+  .metric-label { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
+  .metric-value { font-size: 20px; font-weight: 500; line-height: 1.2; }
+  .host-metric-value { font-size: 16px; font-weight: 500; line-height: 1.2; }
+  .metric-unit { font-size: 12px; font-weight: 400; color: var(--text3); }
+  .bar-wrap { height: 5px; background: var(--border); border-radius: 3px; margin-top: 8px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s, background 0.5s; }
+  .section-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px 18px; margin-bottom: 1rem; }
+  .probe-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .probe-table th { text-align: left; font-weight: 500; font-size: 11px; color: var(--text3); padding: 0 8px 8px 0; text-transform: uppercase; letter-spacing: 0.05em; }
+  .probe-table td { padding: 7px 8px 7px 0; border-top: 0.5px solid var(--border); vertical-align: middle; }
+  .probe-table td.latency { text-align: right; color: var(--text2); }
+  .pill { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 999px; }
+  .pill-ok   { background: #EAF3DE; color: #3B6D11; }
+  .pill-err  { background: #FCEBEB; color: #A32D2D; }
+  .pill-na   { background: var(--bg3); color: var(--text3); }
+  .footer { display: flex; align-items: center; justify-content: space-between; margin-top: 1.5rem; flex-wrap: wrap; gap: 8px; }
+  .footer-note { font-size: 11px; color: var(--text3); }
+  .refresh-btn { font-size: 12px; cursor: pointer; padding: 5px 14px; background: transparent; border: 0.5px solid var(--border2); border-radius: var(--radius-md); color: var(--text); }
+  .refresh-btn:hover { background: var(--bg3); }
+  .divider { border: none; border-top: 0.5px solid var(--border); margin: 10px 0; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Homelab status</h1>
+  <div class="header-right">
+    <span class="last-updated" id="last-updated">Checking...</span>
+    <span class="overall-badge overall-ok" id="overall-badge">
+      <span class="dot dot-ok pulse" id="overall-dot"></span>
+      <span id="overall-label">Checking...</span>
+    </span>
+  </div>
+</div>
+
+<!-- INTERNET PI SERVICES -->
+<p class="section-title">Internet Pi &mdash; 192.168.0.53</p>
+<div class="grid">
+  <div class="card"><div class="card-header"><span class="card-name">Grafana</span><span class="dot dot-loading pulse" id="dot-grafana"></span></div><div class="card-meta">:3030</div><div class="status-label" id="status-grafana">Checking...</div></div>
+  <div class="card"><div class="card-header"><span class="card-name">Prometheus</span><span class="dot dot-loading pulse" id="dot-prometheus"></span></div><div class="card-meta">:9090</div><div class="status-label" id="status-prometheus">Checking...</div></div>
+  <div class="card"><div class="card-header"><span class="card-name">Node Exporter</span><span class="dot dot-loading pulse" id="dot-node"></span></div><div class="card-meta">:9110</div><div class="status-label" id="status-node">Checking...</div></div>
+  <div class="card"><div class="card-header"><span class="card-name">Speedtest</span><span class="dot-na"></span></div><div class="card-meta">:9798 · internal</div><div class="status-label">Via Prometheus</div></div>
+  <div class="card"><div class="card-header"><span class="card-name">Blackbox</span><span class="dot dot-loading pulse" id="dot-blackbox"></span></div><div class="card-meta">:9115</div><div class="status-label" id="status-blackbox">Checking...</div></div>
+  <div class="card"><div class="card-header"><span class="card-name">NUT Exporter</span><span class="dot dot-loading pulse" id="dot-nut"></span></div><div class="card-meta">:9199</div><div class="status-label" id="status-nut">Checking...</div></div>
+  <div class="card"><div class="card-header"><span class="card-name">Helpdesk</span><span class="dot dot-loading pulse" id="dot-helpdesk"></span></div><div class="card-meta">:5080</div><div class="status-label" id="status-helpdesk">Checking...</div></div>
+</div>
+
+<!-- SYSTEM METRICS -->
+<p class="section-title">System metrics &mdash; Internet Pi</p>
+<div class="metrics-grid">
+  <div class="metric-card"><div class="metric-label">CPU</div><div class="metric-value" id="m-cpu">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-cpu" style="width:0%;background:#639922"></div></div></div>
+  <div class="metric-card"><div class="metric-label">Memory</div><div class="metric-value" id="m-mem">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-mem" style="width:0%;background:#639922"></div></div></div>
+  <div class="metric-card"><div class="metric-label">Disk</div><div class="metric-value" id="m-disk">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-disk" style="width:0%;background:#639922"></div></div></div>
+  <div class="metric-card"><div class="metric-label">Uptime</div><div class="metric-value" id="m-uptime" style="font-size:15px;">—</div></div>
+</div>
+
+<p class="section-title">System metrics &mdash; Home Assistant (192.168.0.44)</p>
+<div class="metrics-grid">
+  <div class="metric-card"><div class="metric-label">CPU</div><div class="metric-value" id="m-ha-cpu">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-ha-cpu" style="width:0%;background:#639922"></div></div></div>
+  <div class="metric-card"><div class="metric-label">Memory</div><div class="metric-value" id="m-ha-mem">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-ha-mem" style="width:0%;background:#639922"></div></div></div>
+  <div class="metric-card"><div class="metric-label">Disk</div><div class="metric-value" id="m-ha-disk">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-ha-disk" style="width:0%;background:#639922"></div></div></div>
+  <div class="metric-card"><div class="metric-label">Uptime</div><div class="metric-value" id="m-ha-uptime" style="font-size:15px;">—</div></div>
+</div>
+
+<p class="section-title">System metrics &mdash; Pi-hole (192.168.0.47)</p>
+<div class="metrics-grid">
+  <div class="metric-card"><div class="metric-label">CPU</div><div class="metric-value" id="m-ph-cpu">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-ph-cpu" style="width:0%;background:#639922"></div></div></div>
+  <div class="metric-card"><div class="metric-label">Memory</div><div class="metric-value" id="m-ph-mem">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-ph-mem" style="width:0%;background:#639922"></div></div></div>
+  <div class="metric-card"><div class="metric-label">Disk</div><div class="metric-value" id="m-ph-disk">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-ph-disk" style="width:0%;background:#639922"></div></div></div>
+  <div class="metric-card"><div class="metric-label">Uptime</div><div class="metric-value" id="m-ph-uptime" style="font-size:15px;">—</div></div>
+</div>
+
+<!-- UPS -->
+<p class="section-title">UPS &mdash; Tripp Lite (09AE:2012)</p>
+<div class="metrics-grid" style="margin-bottom:0.5rem">
+  <div class="metric-card"><div class="metric-label">Battery charge</div><div class="metric-value" id="m-bat">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-bat" style="width:0%;background:#639922"></div></div></div>
+  <div class="metric-card"><div class="metric-label">Runtime left</div><div class="metric-value" id="m-runtime" style="font-size:15px;">—</div></div>
+  <div class="metric-card"><div class="metric-label">Load</div><div class="metric-value" id="m-upsload">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-upsload" style="width:0%;background:#639922"></div></div></div>
+  <div class="metric-card"><div class="metric-label">Input voltage</div><div class="metric-value" id="m-vin">—<span class="metric-unit"> V</span></div></div>
+</div>
+
+<!-- PI-HOLE & INTERNET SPEED -->
+<p class="section-title">Pi-hole &mdash; 192.168.0.47</p>
+<div class="host-card">
+  <div class="host-header">
+    <div><div class="host-name">Pi-hole</div><div class="host-ip">192.168.0.47</div></div>
+    <div class="host-status"><span class="dot-na"></span><span class="status-label">Via node exporter</span></div>
+  </div>
+  <div class="services-row">
+    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Admin UI</span><span class="svc-chip-port">:80/admin</span></div><span class="dot dot-loading pulse" id="dot-pihole-admin"></span></div>
+    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Total queries</span><span class="svc-chip-port">today</span></div><span style="font-size:13px;font-weight:500" id="ph-queries">—</span></div>
+    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Blocked</span><span class="svc-chip-port">today</span></div><span style="font-size:13px;font-weight:500" id="ph-blocked">—</span></div>
+    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Block %</span><span class="svc-chip-port">today</span></div><span style="font-size:13px;font-weight:500" id="ph-pct">—</span></div>
+    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Blocklist</span><span class="svc-chip-port">domains</span></div><span style="font-size:13px;font-weight:500" id="ph-list">—</span></div>
+  </div>
+</div>
+
+<p class="section-title">Internet speed (via Speedtest Exporter)</p>
+<div class="metrics-grid" style="margin-bottom:0.5rem">
+  <div class="metric-card"><div class="metric-label">Download</div><div class="metric-value" id="m-dl">—<span class="metric-unit"> Mbps</span></div></div>
+  <div class="metric-card"><div class="metric-label">Upload</div><div class="metric-value" id="m-ul">—<span class="metric-unit"> Mbps</span></div></div>
+  <div class="metric-card"><div class="metric-label">Ping</div><div class="metric-value" id="m-ping">—<span class="metric-unit"> ms</span></div></div>
+  <div class="metric-card"><div class="metric-label">Last tested</div><div class="metric-value" id="m-speedtime" style="font-size:14px;">—</div></div>
+</div>
+
+<!-- COMPUTERS -->
+<p class="section-title">Computers</p>
+
+<div class="host-card">
+  <div class="host-header">
+    <div><div class="host-name">Mac Mini (MAC-SERVER)</div><div class="host-ip">192.168.0.116</div></div>
+    <div class="host-status"><span class="dot dot-loading pulse" id="dot-macmini"></span><span class="status-label" id="status-macmini">Checking...</span></div>
+  </div>
+  <div class="services-row">
+    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">SimpleLogin</span><span class="svc-chip-port">:7777</span></div><span class="dot dot-loading pulse" id="dot-simplelogin"></span></div>
+    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Open WebUI</span><span class="svc-chip-port">:8080</span></div><span class="dot dot-loading pulse" id="dot-macmini-webui"></span></div>
+    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Get It server</span><span class="svc-chip-port">:9876</span></div><span class="dot dot-loading pulse" id="dot-getit"></span></div>
+  </div>
+  <div class="host-metrics-grid">
+    <div class="host-metric-card"><div class="metric-label">CPU</div><div class="host-metric-value" id="m-mm-cpu">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-mm-cpu" style="width:0%;background:#639922"></div></div></div>
+    <div class="host-metric-card"><div class="metric-label">Memory</div><div class="host-metric-value" id="m-mm-mem">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-mm-mem" style="width:0%;background:#639922"></div></div></div>
+    <div class="host-metric-card"><div class="metric-label">Disk</div><div class="host-metric-value" id="m-mm-disk">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-mm-disk" style="width:0%;background:#639922"></div></div></div>
+    <div class="host-metric-card"><div class="metric-label">Uptime</div><div class="host-metric-value" id="m-mm-uptime" style="font-size:13px;">—</div></div>
+  </div>
+</div>
+
+<div class="host-card">
+  <div class="host-header">
+    <div><div class="host-name">Mac Studio (M3 Ultra)</div><div class="host-ip">192.168.0.38</div></div>
+    <div class="host-status"><span class="dot dot-loading pulse" id="dot-ultra"></span><span class="status-label" id="status-ultra">Checking...</span></div>
+  </div>
+  <div class="services-row">
+    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Ollama</span><span class="svc-chip-port">:11434</span></div><span class="dot dot-loading pulse" id="dot-ollama"></span></div>
+    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Open WebUI</span><span class="svc-chip-port">:8080</span></div><span class="dot dot-loading pulse" id="dot-openwebui"></span></div>
+    <div class="svc-chip svc-chip-na"><div class="svc-chip-left"><span class="svc-chip-name">Whisper STT</span><span class="svc-chip-port">:10300 · Wyoming</span></div><span class="dot-na"></span></div>
+    <div class="svc-chip svc-chip-na"><div class="svc-chip-left"><span class="svc-chip-name">Piper TTS</span><span class="svc-chip-port">:10200 · Wyoming</span></div><span class="dot-na"></span></div>
+  </div>
+  <div class="host-metrics-grid">
+    <div class="host-metric-card"><div class="metric-label">CPU</div><div class="host-metric-value" id="m-ms-cpu">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-ms-cpu" style="width:0%;background:#639922"></div></div></div>
+    <div class="host-metric-card"><div class="metric-label">Memory</div><div class="host-metric-value" id="m-ms-mem">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-ms-mem" style="width:0%;background:#639922"></div></div></div>
+    <div class="host-metric-card"><div class="metric-label">Disk</div><div class="host-metric-value" id="m-ms-disk">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-ms-disk" style="width:0%;background:#639922"></div></div></div>
+    <div class="host-metric-card"><div class="metric-label">Uptime</div><div class="host-metric-value" id="m-ms-uptime" style="font-size:13px;">—</div></div>
+  </div>
+</div>
+
+<div class="host-card">
+  <div class="host-header">
+    <div><div class="host-name">UNAS Pro NAS</div><div class="host-ip">192.168.0.127</div></div>
+    <div class="host-status"><span class="dot dot-loading pulse" id="dot-unas"></span><span class="status-label" id="status-unas">Checking...</span></div>
+  </div>
+  <div class="services-row">
+    <div class="svc-chip"><div class="svc-chip-left"><span class="svc-chip-name">Web UI</span><span class="svc-chip-port">:80</span></div><span class="dot dot-loading pulse" id="dot-unas-ui"></span></div>
+    <div class="svc-chip svc-chip-na"><div class="svc-chip-left"><span class="svc-chip-name">SMB (FILES)</span><span class="svc-chip-port">:445 · TCP only</span></div><span class="dot-na"></span></div>
+  </div>
+  <div class="host-metrics-grid">
+    <div class="host-metric-card"><div class="metric-label">CPU</div><div class="host-metric-value" id="m-nas-cpu">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-nas-cpu" style="width:0%;background:#639922"></div></div></div>
+    <div class="host-metric-card"><div class="metric-label">Memory</div><div class="host-metric-value" id="m-nas-mem">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-nas-mem" style="width:0%;background:#639922"></div></div></div>
+    <div class="host-metric-card"><div class="metric-label">Disk</div><div class="host-metric-value" id="m-nas-disk">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-nas-disk" style="width:0%;background:#639922"></div></div></div>
+    <div class="host-metric-card"><div class="metric-label">Uptime</div><div class="host-metric-value" id="m-nas-uptime" style="font-size:13px;">—</div></div>
+  </div>
+</div>
+
+<div class="host-card">
+  <div class="host-header">
+    <div><div class="host-name">UDM Pro</div><div class="host-ip">192.168.0.1</div></div>
+    <div class="host-status"><span class="dot dot-loading pulse" id="dot-udm"></span><span class="status-label" id="status-udm">Checking...</span></div>
+  </div>
+  <div class="host-metrics-grid">
+    <div class="host-metric-card"><div class="metric-label">CPU</div><div class="host-metric-value" id="m-udm-cpu">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-udm-cpu" style="width:0%;background:#639922"></div></div></div>
+    <div class="host-metric-card"><div class="metric-label">Memory</div><div class="host-metric-value" id="m-udm-mem">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-udm-mem" style="width:0%;background:#639922"></div></div></div>
+    <div class="host-metric-card"><div class="metric-label">Disk</div><div class="host-metric-value" id="m-udm-disk">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-udm-disk" style="width:0%;background:#639922"></div></div></div>
+    <div class="host-metric-card"><div class="metric-label">Uptime</div><div class="host-metric-value" id="m-udm-uptime" style="font-size:13px;">—</div></div>
+  </div>
+</div>
+
+<div class="host-card" style="margin-bottom:0.5rem">
+  <div class="host-header">
+    <div><div class="host-name">NVR (UNVR)</div><div class="host-ip">192.168.0.142</div></div>
+    <div class="host-status"><span class="dot dot-loading pulse" id="dot-nvr"></span><span class="status-label" id="status-nvr">Checking...</span></div>
+  </div>
+  <div class="host-metrics-grid">
+    <div class="host-metric-card"><div class="metric-label">CPU</div><div class="host-metric-value" id="m-nvr-cpu">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-nvr-cpu" style="width:0%;background:#639922"></div></div></div>
+    <div class="host-metric-card"><div class="metric-label">Memory</div><div class="host-metric-value" id="m-nvr-mem">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-nvr-mem" style="width:0%;background:#639922"></div></div></div>
+    <div class="host-metric-card"><div class="metric-label">Disk</div><div class="host-metric-value" id="m-nvr-disk">—<span class="metric-unit"> %</span></div><div class="bar-wrap"><div class="bar-fill" id="bar-nvr-disk" style="width:0%;background:#639922"></div></div></div>
+    <div class="host-metric-card"><div class="metric-label">Uptime</div><div class="host-metric-value" id="m-nvr-uptime" style="font-size:13px;">—</div></div>
+  </div>
+</div>
+
+<!-- INTERNET PROBES -->
+<p class="section-title">Internet probes (via Blackbox Exporter)</p>
+<div class="section-card">
+  <table class="probe-table">
+    <thead><tr><th>Host</th><th>Status</th><th>Latency</th></tr></thead>
+    <tbody id="probe-tbody">
+      <tr><td>Google</td><td><span class="pill pill-na">—</span></td><td class="latency">—</td></tr>
+      <tr><td>GitHub</td><td><span class="pill pill-na">—</span></td><td class="latency">—</td></tr>
+      <tr><td>Apple</td><td><span class="pill pill-na">—</span></td><td class="latency">—</td></tr>
+      <tr><td>Cloudflare</td><td><span class="pill pill-na">—</span></td><td class="latency">—</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">
+  <span class="footer-note">Auto-refreshes every 30s &mdash; Prometheus metrics require --web.cors.origin=.* on :9090</span>
+  <button class="refresh-btn" onclick="runAll()">Refresh now</button>
+</div>
+
+<script>
+var PI      = '192.168.0.53';
+var PROM    = 'http://' + PI + ':9090/api/v1/query';
+var PIHOLE  = 'http://192.168.0.47';
+var PIHOLE_API_KEY = 'fp8Q3+26UABgZyAUTLIoy3Fc7IWSNd0NXOTaSwsJV7U=';
+
+var piServices = [
+  { id: 'grafana',    host: PI, port: 3030, path: '/api/health' },
+  { id: 'prometheus', host: PI, port: 9090, path: '/-/healthy' },
+  { id: 'node',       host: PI, port: 9110, path: '/metrics' },
+  { id: 'blackbox',   host: PI, port: 9115, path: '/metrics' },
+  { id: 'nut',        host: PI, port: 9199, path: '/metrics' },
+  { id: 'helpdesk',   host: PI, port: 5080, path: '/' },
+];
+
+var hostChecks = [
+  { id: 'macmini', host: '192.168.0.116', port: 7777  },
+  { id: 'ultra',   host: '192.168.0.38',  port: 11434 },
+  { id: 'unas',    host: '192.168.0.127', port: 80    },
+  { id: 'udm',     host: '192.168.0.1',   port: 9100  },
+  { id: 'nvr',     host: '192.168.0.142', port: 9100  },
+];
+
+var subServices = [
+  { id: 'pihole-admin',  host: '192.168.0.47',  port: 80,    path: '/admin/' },
+  { id: 'simplelogin',   host: '192.168.0.116', port: 7777,  path: '/' },
+  { id: 'macmini-webui', host: '192.168.0.116', port: 8080,  path: '/' },
+  { id: 'getit',         host: '192.168.0.116', port: 9876,  path: '/' },
+  { id: 'ollama',        host: '192.168.0.38',  port: 11434, path: '/' },
+  { id: 'openwebui',     host: '192.168.0.38',  port: 8080,  path: '/' },
+  { id: 'unas-ui',       host: '192.168.0.127', port: 80,    path: '/' },
+];
+
+var probeHosts = [
+  { name: 'Google',     target: 'https://www.google.com/' },
+  { name: 'GitHub',     target: 'https://github.com/' },
+  { name: 'Apple',      target: 'https://www.apple.com/' },
+  { name: 'Cloudflare', target: 'https://1.1.1.1/' },
+];
+
+function setDot(id, state) {
+  var el = document.getElementById('dot-' + id);
+  if (!el) return;
+  var map = { ok: 'dot dot-ok', err: 'dot dot-err', warn: 'dot dot-warn', loading: 'dot dot-loading pulse' };
+  el.className = map[state] || 'dot dot-loading pulse';
+}
+function setStatus(id, state, text) {
+  var el = document.getElementById('status-' + id);
+  if (!el) return;
+  el.className = 'status-label' + (state && state !== 'loading' ? ' status-label-' + state : '');
+  el.textContent = text;
+}
+async function ping(host, port, path) {
+  path = path || '/';
+  try {
+    await fetch('http://' + host + ':' + port + path, { method: 'HEAD', mode: 'no-cors', signal: AbortSignal.timeout(4000) });
+    return 'ok';
+  } catch(e) { return 'err'; }
+}
+async function checkPiService(s) {
+  var state = await ping(s.host, s.port, s.path);
+  setDot(s.id, state); setStatus(s.id, state, state === 'ok' ? 'Online' : 'Unreachable');
+  return state;
+}
+async function checkHost(h) {
+  var state = await ping(h.host, h.port, '/');
+  setDot(h.id, state); setStatus(h.id, state, state === 'ok' ? 'Online' : 'Unreachable');
+  return state;
+}
+async function checkSub(s) {
+  var state = await ping(s.host, s.port, s.path);
+  setDot(s.id, state);
+}
+
+async function promQuery(expr) {
+  try {
+    var r = await fetch(PROM + '?query=' + encodeURIComponent(expr), { signal: AbortSignal.timeout(5000) });
+    var j = await r.json();
+    if (j.status === 'success' && j.data.result.length > 0) return parseFloat(j.data.result[0].value[1]);
+    return null;
+  } catch(e) { return null; }
+}
+
+// gradient: green(0%) -> yellow(50%) -> red(100% usage)
+// for battery: inverted — green at 100%, red at 0%
+function gradientColor(pct, invert) {
+  var p = invert ? (100 - pct) : pct;
+  var r, g;
+  if (p <= 50) {
+    r = Math.round(99 + (186 - 99) * (p / 50));
+    g = Math.round(153 - (153 - 115) * (p / 50));
+  } else {
+    r = Math.round(186 + (226 - 186) * ((p - 50) / 50));
+    g = Math.round(115 * (1 - (p - 50) / 50));
+  }
+  return 'rgb(' + r + ',' + g + ',34)';
+}
+
+function setGradientBar(id, pct, invert) {
+  var el = document.getElementById('bar-' + id);
+  if (!el) return;
+  el.style.width = Math.min(100, Math.round(pct)) + '%';
+  el.style.background = gradientColor(pct, invert || false);
+}
+
+function setMetric(id, val, decimals, raw) {
+  var el = document.getElementById('m-' + id);
+  if (!el) return;
+  var unit = el.querySelector('.metric-unit');
+  var unitHTML = unit ? unit.outerHTML : '';
+  if (val === null || val === undefined) { el.innerHTML = '&mdash;' + unitHTML; return; }
+  if (raw) { el.innerHTML = val + unitHTML; return; }
+  el.innerHTML = parseFloat(val).toFixed(typeof decimals === 'number' ? decimals : 0) + unitHTML;
+}
+
+function fmtUptime(secs) {
+  var d = Math.floor(secs/86400), h = Math.floor((secs%86400)/3600), m = Math.floor((secs%3600)/60);
+  return d+'d '+h+'h '+m+'m';
+}
+
+async function loadHostMetrics(prefix, host) {
+  var cpu = await promQuery('100 - (avg(irate(node_cpu_seconds_total{job="node",host="'+host+'",mode="idle"}[5m])) * 100)');
+  if (cpu !== null) { setMetric(prefix+'-cpu', cpu, 1); setGradientBar(prefix+'-cpu', cpu); }
+  var memT = await promQuery('node_memory_MemTotal_bytes{job="node",host="'+host+'"}');
+  var memA = await promQuery('node_memory_MemAvailable_bytes{job="node",host="'+host+'"}');
+  if (memT && memA) { var mp = (1-memA/memT)*100; setMetric(prefix+'-mem', mp, 1); setGradientBar(prefix+'-mem', mp); }
+  var diskT = await promQuery('node_filesystem_size_bytes{job="node",host="'+host+'",mountpoint="/"}');
+  var diskF = await promQuery('node_filesystem_free_bytes{job="node",host="'+host+'",mountpoint="/"}');
+  if (diskT && diskF) { var dp = (1-diskF/diskT)*100; setMetric(prefix+'-disk', dp, 1); setGradientBar(prefix+'-disk', dp); }
+  var upt = await promQuery('node_time_seconds{job="node",host="'+host+'"} - node_boot_time_seconds{job="node",host="'+host+'"}');
+  if (upt !== null) setMetric(prefix+'-uptime', fmtUptime(upt), null, true);
+}
+
+async function loadPiholeStats() {
+  try {
+    var r = await fetch(PIHOLE + '/admin/api.php?summaryRaw&auth=' + encodeURIComponent(PIHOLE_API_KEY), { signal: AbortSignal.timeout(5000) });
+    var j = await r.json();
+    document.getElementById('ph-queries').textContent = j.dns_queries_today ? j.dns_queries_today.toLocaleString() : '—';
+    document.getElementById('ph-blocked').textContent = j.ads_blocked_today ? j.ads_blocked_today.toLocaleString() : '—';
+    document.getElementById('ph-pct').textContent = j.ads_percentage_today ? j.ads_percentage_today.toFixed(1)+'%' : '—';
+    document.getElementById('ph-list').textContent = j.domains_being_blocked ? j.domains_being_blocked.toLocaleString() : '—';
+  } catch(e) {
+    document.getElementById('ph-queries').textContent = '—';
+    document.getElementById('ph-blocked').textContent = '—';
+    document.getElementById('ph-pct').textContent = '—';
+    document.getElementById('ph-list').textContent = '—';
+  }
+}
+
+async function loadSpeedtest() {
+  var dl = await promQuery('speedtest_download_bits_per_second');
+  if (dl !== null) setMetric('dl', dl/1e6, 1);
+  var ul = await promQuery('speedtest_upload_bits_per_second');
+  if (ul !== null) setMetric('ul', ul/1e6, 1);
+  var ping = await promQuery('speedtest_ping_latency_milliseconds');
+  if (ping !== null) setMetric('ping', ping, 0);
+  var ts = await promQuery('speedtest_scrape_duration_seconds');
+  if (ts !== null) {
+    var d = new Date((Date.now() - ts * 1000));
+    setMetric('speedtime', d.toLocaleTimeString(), null, true);
+  }
+}
+
+async function loadMetrics() {
+  await Promise.all([
+    loadHostMetrics('cpu', 'PRIMARY'),   // reuse prefix trick
+    loadHostMetrics('ha', 'HOMEASSIST'),
+    loadHostMetrics('ph', 'PIHOLE'),
+    loadHostMetrics('mm', 'MACMINI'),
+    loadHostMetrics('ms', 'MACSTUDIO'),
+    loadHostMetrics('nas', 'UNAS'),
+    loadHostMetrics('udm', 'UDMPRO'),
+    loadHostMetrics('nvr', 'NVR'),
+    loadSpeedtest(),
+    loadPiholeStats(),
+  ]);
+
+  // UPS — battery inverted gradient (green=full, red=empty)
+  var bat = await promQuery('network_ups_tools_battery_charge');
+  if (bat !== null) { setMetric('bat', bat, 0); setGradientBar('bat', bat, true); }
+  var rt = await promQuery('network_ups_tools_battery_runtime');
+  if (rt !== null) setMetric('runtime', Math.floor(rt/60)+' min', null, true);
+  var upsload = await promQuery('network_ups_tools_ups_load');
+  if (upsload !== null) { setMetric('upsload', upsload, 1); setGradientBar('upsload', upsload); }
+  var vin = await promQuery('network_ups_tools_input_voltage');
+  if (vin !== null) setMetric('vin', vin, 1);
+}
+
+// Fix: PRIMARY host uses different prefix mapping
+var origLoadHostMetrics = loadHostMetrics;
+async function loadAllHostMetrics() {
+  var cpu = await promQuery('100 - (avg(irate(node_cpu_seconds_total{job="node",host="PRIMARY",mode="idle"}[5m])) * 100)');
+  if (cpu !== null) { setMetric('cpu', cpu, 1); setGradientBar('cpu', cpu); }
+  var memT = await promQuery('node_memory_MemTotal_bytes{job="node",host="PRIMARY"}');
+  var memA = await promQuery('node_memory_MemAvailable_bytes{job="node",host="PRIMARY"}');
+  if (memT && memA) { var mp=(1-memA/memT)*100; setMetric('mem', mp, 1); setGradientBar('mem', mp); }
+  var diskT = await promQuery('node_filesystem_size_bytes{job="node",host="PRIMARY",mountpoint="/"}');
+  var diskF = await promQuery('node_filesystem_free_bytes{job="node",host="PRIMARY",mountpoint="/"}');
+  if (diskT && diskF) { var dp=(1-diskF/diskT)*100; setMetric('disk', dp, 1); setGradientBar('disk', dp); }
+  var upt = await promQuery('node_time_seconds{job="node",host="PRIMARY"} - node_boot_time_seconds{job="node",host="PRIMARY"}');
+  if (upt !== null) setMetric('uptime', fmtUptime(upt), null, true);
+
+  await Promise.all([
+    loadHostMetrics('ha', 'HOMEASSIST'),
+    loadHostMetrics('ph', 'PIHOLE'),
+    loadHostMetrics('mm', 'MACMINI'),
+    loadHostMetrics('ms', 'MACSTUDIO'),
+    loadHostMetrics('nas', 'UNAS'),
+    loadHostMetrics('udm', 'UDMPRO'),
+    loadHostMetrics('nvr', 'NVR'),
+    loadSpeedtest(),
+    loadPiholeStats(),
+  ]);
+
+  // UPS
+  var bat = await promQuery('network_ups_tools_battery_charge');
+  if (bat !== null) { setMetric('bat', bat, 0); setGradientBar('bat', bat, true); }
+  var rt = await promQuery('network_ups_tools_battery_runtime');
+  if (rt !== null) setMetric('runtime', Math.floor(rt/60)+' min', null, true);
+  var upsload = await promQuery('network_ups_tools_ups_load');
+  if (upsload !== null) { setMetric('upsload', upsload, 1); setGradientBar('upsload', upsload); }
+  var vin = await promQuery('network_ups_tools_input_voltage');
+  if (vin !== null) setMetric('vin', vin, 1);
+}
+
+async function loadProbes() {
+  var tbody = document.getElementById('probe-tbody');
+  for (var i = 0; i < probeHosts.length; i++) {
+    var h = probeHosts[i];
+    var ok  = await promQuery('probe_success{instance="' + h.target + '"}');
+    var dur = await promQuery('probe_duration_seconds{instance="' + h.target + '"}');
+    var row = tbody.rows[i];
+    if (!row) continue;
+    var pillClass = ok === null ? 'pill-na' : ok === 1 ? 'pill-ok' : 'pill-err';
+    var pillText  = ok === null ? '&mdash;' : ok === 1 ? 'Up' : 'Down';
+    row.cells[1].innerHTML = '<span class="pill ' + pillClass + '">' + pillText + '</span>';
+    row.cells[2].textContent = dur !== null ? Math.round(dur*1000)+' ms' : '—';
+  }
+}
+
+async function runAll() {
+  document.getElementById('last-updated').textContent = 'Refreshing...';
+  var piResults   = await Promise.all(piServices.map(checkPiService));
+  var hostResults = await Promise.all(hostChecks.map(checkHost));
+  await Promise.all(subServices.map(checkSub));
+  await Promise.all([loadAllHostMetrics(), loadProbes()]);
+
+  var all = piResults.concat(hostResults);
+  var errCount = all.filter(function(r){ return r === 'err'; }).length;
+  var badge = document.getElementById('overall-badge');
+  var dot   = document.getElementById('overall-dot');
+  var label = document.getElementById('overall-label');
+  if (errCount === 0) {
+    badge.className = 'overall-badge overall-ok'; dot.className = 'dot dot-ok pulse';
+    label.textContent = 'All systems nominal';
+  } else if (errCount <= 3) {
+    badge.className = 'overall-badge overall-warn'; dot.className = 'dot dot-warn pulse';
+    label.textContent = errCount + ' host' + (errCount > 1 ? 's' : '') + ' unreachable';
+  } else {
+    badge.className = 'overall-badge overall-err'; dot.className = 'dot dot-err pulse';
+    label.textContent = errCount + ' hosts down';
+  }
+  document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString();
+}
+
+runAll();
+setInterval(runAll, 30000);
+</script>
+</body>
+</html>
