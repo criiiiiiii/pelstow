@@ -9,12 +9,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  /* ── Reset ── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
-  img { display: block; max-width: 100%; }
 
-  /* ── Tokens ── */
   :root {
     --obsidian: #1A1A18;
     --chalk:    #F5F4F0;
@@ -22,36 +19,25 @@
     --slate:    #7A7A72;
     --charcoal: #2E2E2A;
     --rule:     #C8C7BE;
-    --rule-dk:  #2A2A26;
-    --muted:    #5A5A54;
-    --muted-dk: #6A6A64;
-    --ghost:    #4A4A44;
-    --light:    #E0DFD8;
+    --rule-dk:  #333330;
+    --muted:    #3A3A34;
+    --muted-dk: #B0B0A8;
+    --ghost:    #9A9A92;
+    --light:    #D8D7CE;
     --sans:     'IBM Plex Sans', sans-serif;
     --mono:     'IBM Plex Mono', monospace;
   }
 
-  /* ── Base ── */
   body {
     font-family: var(--sans);
     background: var(--chalk);
     color: var(--obsidian);
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ── Utilities ── */
-  .mono    { font-family: var(--mono); }
-  .label   { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); }
-  .label-dk{ font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ghost); }
-  .rule-h  { height: 1px; background: var(--rule); }
-
-  /* ── Logo mark ── */
-  .logo-lockup { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-  .logo-text   { display: flex; flex-direction: column; }
-  .logo-word   { font-family: var(--sans); font-size: 15px; font-weight: 400; letter-spacing: 0.12em; color: var(--obsidian); text-transform: uppercase; line-height: 1; }
-  .logo-sub    { font-family: var(--mono); font-size: 8px; letter-spacing: 0.14em; color: var(--slate); margin-top: 3px; text-transform: uppercase; }
+  .mono { font-family: var(--mono); }
 
   /* ── Nav ── */
   nav {
@@ -65,188 +51,131 @@
     background: var(--chalk);
     z-index: 100;
   }
-  .nav-links { display: flex; gap: 32px; align-items: center; }
-  .nav-link  { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate); text-decoration: none; transition: color 0.15s; }
+  .logo-lockup { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-word   { font-family: var(--sans); font-size: 16px; font-weight: 500; letter-spacing: 0.12em; color: var(--obsidian); text-transform: uppercase; line-height: 1; }
+  .logo-sub    { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; color: var(--slate); margin-top: 3px; text-transform: uppercase; }
+  .nav-links   { display: flex; gap: 32px; align-items: center; }
+  .nav-link    { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate); text-decoration: none; transition: color 0.15s; }
   .nav-link:hover { color: var(--obsidian); }
-  .nav-cta   { font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--chalk); background: var(--obsidian); padding: 9px 18px; text-decoration: none; transition: background 0.15s; }
+  .nav-cta     { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--chalk); background: var(--obsidian); padding: 9px 18px; text-decoration: none; transition: background 0.15s; }
   .nav-cta:hover { background: var(--braun); }
 
   /* ── Hero ── */
-  .hero {
-    display: grid;
-    grid-template-columns: 3fr 2fr;
-    border-bottom: 1px solid var(--rule);
-    min-height: 420px;
-  }
-  .hero-l {
-    padding: 64px 48px;
-    border-right: 1px solid var(--rule);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .hero-r {
-    padding: 64px 48px;
-    background: var(--obsidian);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .eyebrow { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); margin-bottom: 24px; }
+  .hero { display: grid; grid-template-columns: 3fr 2fr; border-bottom: 1px solid var(--rule); min-height: 420px; }
+  .hero-l { padding: 64px 48px; border-right: 1px solid var(--rule); display: flex; flex-direction: column; justify-content: space-between; }
+  .hero-r { padding: 64px 48px; background: var(--obsidian); display: flex; flex-direction: column; justify-content: space-between; }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); margin-bottom: 24px; }
   .hero-h1 { font-size: 56px; font-weight: 300; line-height: 1.05; letter-spacing: -0.02em; color: var(--obsidian); }
   .hero-h1 strong { font-weight: 500; }
-  .hero-tagline { font-family: var(--mono); font-size: 10px; letter-spacing: 0.06em; color: var(--braun); margin-top: 32px; }
-  .hero-body { font-size: 13px; line-height: 1.85; color: #F0EFE8; font-weight: 300; margin-bottom: 32px; }
-  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule-dk); border-top: 1px solid var(--rule-dk); }
+  .hero-tagline { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; color: var(--braun); margin-top: 32px; }
+  .hero-body { font-size: 15px; line-height: 1.85; color: #E8E7E0; font-weight: 300; margin-bottom: 32px; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--charcoal); border-top: 1px solid var(--charcoal); }
   .stat { background: var(--obsidian); padding: 20px; }
-  .stat-n { font-family: var(--mono); font-size: 22px; font-weight: 500; color: var(--chalk); }
-  .stat-l { font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ghost); margin-top: 4px; }
+  .stat-n { font-family: var(--mono); font-size: 24px; font-weight: 500; color: var(--chalk); }
+  .stat-l { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate); margin-top: 4px; }
 
   /* ── Section header ── */
-  .sec-hd {
-    padding: 20px 48px;
-    border-bottom: 1px solid var(--rule);
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-  }
+  .sec-hd { padding: 20px 48px; border-bottom: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: baseline; }
+  .sec-hl { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--slate); }
 
   /* ── Services ── */
-  .svc-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    border-bottom: 1px solid var(--rule);
-  }
-  .sc {
-    padding: 32px 28px;
-    border-right: 1px solid var(--rule);
-    display: flex;
-    flex-direction: column;
-  }
+  .svc-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--rule); }
+  .sc { padding: 32px 28px; border-right: 1px solid var(--rule); display: flex; flex-direction: column; }
   .sc:last-child { border-right: none; }
-  .sn { font-family: var(--mono); font-size: 9px; color: var(--braun); margin-bottom: 18px; letter-spacing: 0.08em; }
-  .st { font-size: 13px; font-weight: 500; color: var(--obsidian); margin-bottom: 12px; }
-  .sd { font-size: 11px; color: var(--muted); line-height: 1.75; font-weight: 300; flex: 1; }
+  .sn { font-family: var(--mono); font-size: 11px; color: var(--braun); margin-bottom: 18px; letter-spacing: 0.08em; }
+  .st { font-size: 16px; font-weight: 500; color: var(--obsidian); margin-bottom: 12px; }
+  .sd { font-size: 13px; color: var(--muted); line-height: 1.75; font-weight: 300; flex: 1; }
   .tags { margin-top: 24px; display: flex; flex-direction: column; }
-  .tag { font-family: var(--mono); font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--slate); padding: 6px 0; border-top: 0.5px solid var(--rule); }
+  .tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: #5A5A54; padding: 6px 0; border-top: 0.5px solid var(--rule); }
 
   /* ── Positioning ── */
-  .pos {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    border-bottom: 1px solid var(--rule);
-  }
+  .pos { display: grid; grid-template-columns: 1fr 2fr; border-bottom: 1px solid var(--rule); }
   .pos-l { padding: 56px 48px; border-right: 1px solid var(--rule); }
   .pos-r { padding: 56px 48px; display: flex; flex-direction: column; justify-content: space-between; }
   .pos-bar { width: 28px; height: 2px; background: var(--braun); margin-bottom: 28px; }
-  .pos-h { font-size: 26px; font-weight: 300; line-height: 1.3; color: var(--obsidian); letter-spacing: -0.01em; margin-bottom: 24px; }
-  .pos-body { font-size: 12px; line-height: 1.9; color: #3A3A34; font-weight: 300; }
+  .pos-h { font-size: 28px; font-weight: 300; line-height: 1.3; color: var(--obsidian); letter-spacing: -0.01em; margin-bottom: 24px; }
+  .pos-body { font-size: 14px; line-height: 1.9; color: #2A2A24; font-weight: 300; }
   .pts { margin-top: 32px; }
-  .pt { display: flex; gap: 14px; padding: 11px 0; border-top: 0.5px solid var(--rule); align-items: baseline; }
-  .ptn { font-family: var(--mono); font-size: 8px; color: var(--braun); min-width: 16px; }
-  .ptx { font-size: 11px; color: var(--muted); font-weight: 300; line-height: 1.5; }
+  .pt { display: flex; gap: 14px; padding: 12px 0; border-top: 0.5px solid var(--rule); align-items: baseline; }
+  .ptn { font-family: var(--mono); font-size: 10px; color: var(--braun); min-width: 16px; }
+  .ptx { font-size: 13px; color: var(--muted); font-weight: 300; line-height: 1.5; }
   .pullquote { border-top: 2px solid var(--braun); padding-top: 24px; margin-top: 40px; }
-  .pq-text { font-size: 22px; font-weight: 300; line-height: 1.35; color: var(--obsidian); letter-spacing: -0.01em; }
+  .pq-text { font-size: 24px; font-weight: 300; line-height: 1.35; color: var(--obsidian); letter-spacing: -0.01em; }
   .pq-text em { font-style: normal; font-weight: 500; }
+  .plbl { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); margin-bottom: 20px; }
 
   /* ── Sectors ── */
-  .mkt-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    border-bottom: 1px solid var(--rule);
-  }
+  .mkt-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--rule); }
   .mc { padding: 36px 48px; border-right: 1px solid var(--rule); display: flex; flex-direction: column; }
   .mc:last-child { border-right: none; }
   .mbar { width: 100%; height: 2px; background: var(--light); margin-bottom: 24px; }
   .mfill { height: 2px; background: var(--braun); }
-  .ml { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--obsidian); margin-bottom: 10px; font-weight: 500; }
-  .md { font-size: 11px; color: var(--muted); font-weight: 300; line-height: 1.75; flex: 1; }
+  .ml { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--obsidian); margin-bottom: 10px; font-weight: 500; }
+  .md { font-size: 13px; color: var(--muted); font-weight: 300; line-height: 1.75; flex: 1; }
 
   /* ── Contact ── */
-  .contact-band {
-    background: var(--obsidian);
-    padding: 72px 48px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-  }
+  .contact-band { background: var(--obsidian); padding: 72px 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
   .ct-l { border-right: 1px solid var(--rule-dk); padding-right: 48px; display: flex; flex-direction: column; justify-content: space-between; }
   .ct-r { padding-left: 48px; }
-  .ct-h { font-size: 30px; font-weight: 300; color: var(--chalk); letter-spacing: -0.01em; line-height: 1.25; margin-bottom: 20px; }
-  .ct-body { font-size: 12px; color: var(--muted-dk); line-height: 1.85; font-weight: 300; margin-bottom: 32px; }
+  .clbl { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ghost); margin-bottom: 20px; }
+  .ct-h { font-size: 30px; font-weight: 300; color: var(--chalk); letter-spacing: -0.01em; line-height: 1.25; margin-bottom: 16px; }
+  .ct-body { font-size: 14px; color: var(--muted-dk); line-height: 1.85; font-weight: 300; margin-bottom: 32px; }
+  .clist { display: flex; flex-direction: column; }
+  .cli { display: flex; gap: 12px; padding: 12px 0; border-top: 0.5px solid var(--rule-dk); align-items: baseline; }
+  .clin { font-family: var(--mono); font-size: 10px; color: var(--braun); min-width: 16px; }
+  .clit { font-size: 14px; color: #D0D0C8; font-weight: 300; }
 
   /* ── Form ── */
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
   .form-field { display: flex; flex-direction: column; gap: 6px; }
   .form-field.full { grid-column: 1 / -1; }
-  .form-field label { font-family: var(--mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ghost); }
+  .form-field label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ghost); }
   .form-field input,
   .form-field textarea {
-    background: transparent;
-    border: 0.5px solid var(--rule-dk);
+    background: #2A2A26;
+    border: 0.5px solid #444440;
     color: var(--chalk);
     font-family: var(--sans);
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 300;
-    padding: 10px 12px;
+    padding: 12px 14px;
     outline: none;
     transition: border-color 0.15s;
     resize: none;
     border-radius: 0;
     -webkit-appearance: none;
+    width: 100%;
   }
   .form-field input:focus,
   .form-field textarea:focus { border-color: var(--braun); }
   .form-field input::placeholder,
-  .form-field textarea::placeholder { color: var(--ghost); }
+  .form-field textarea::placeholder { color: #5A5A54; }
   .form-field textarea { min-height: 100px; }
 
-  /* Human check */
   .human-check { display: flex; align-items: center; gap: 10px; margin: 16px 0; cursor: pointer; }
-  .human-check input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 16px; height: 16px; border: 0.5px solid var(--rule-dk); background: transparent; cursor: pointer; flex-shrink: 0; transition: border-color 0.15s, background 0.15s; }
+  .human-check input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 16px; height: 16px; border: 0.5px solid #444440; background: transparent; cursor: pointer; flex-shrink: 0; transition: border-color 0.15s, background 0.15s; }
   .human-check input[type="checkbox"]:checked { background: var(--braun); border-color: var(--braun); background-image: url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4L3.5 6.5L9 1' stroke='%23F5F4F0' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: center; }
-  .human-check span { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; color: var(--ghost); text-transform: uppercase; }
+  .human-check span { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; color: var(--ghost); text-transform: uppercase; }
 
-  .form-submit {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 14px 28px;
-    background: var(--braun);
-    color: var(--chalk);
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    transition: opacity 0.15s;
-    margin-top: 4px;
-  }
+  .form-submit { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 14px 28px; background: var(--braun); color: var(--chalk); border: none; cursor: pointer; width: 100%; transition: opacity 0.15s; margin-top: 4px; }
   .form-submit:disabled { opacity: 0.35; cursor: not-allowed; }
   .form-submit:not(:disabled):hover { opacity: 0.88; }
 
   .form-success { display: none; text-align: center; padding: 40px 0; }
   .form-success .fs-icon { width: 32px; height: 32px; background: var(--braun); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
-  .form-success p { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ghost); }
+  .form-success p { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ghost); }
 
   /* ── Footer ── */
-  footer {
-    padding: 20px 48px;
-    background: var(--obsidian);
-    border-top: 1px solid var(--rule-dk);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .ft { font-family: var(--mono); font-size: 9px; color: var(--ghost); letter-spacing: 0.06em; }
-  .ft-logo { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--braun); letter-spacing: 0.16em; }
+  footer { padding: 20px 48px; background: var(--obsidian); border-top: 1px solid var(--rule-dk); display: flex; justify-content: space-between; align-items: center; }
+  .ft { font-family: var(--mono); font-size: 10px; color: #4A4A44; letter-spacing: 0.06em; }
+  .ft-logo { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--braun); letter-spacing: 0.16em; }
 
   /* ── Responsive ── */
   @media (max-width: 900px) {
     nav { padding: 16px 24px; }
     .nav-links .nav-link { display: none; }
     .hero { grid-template-columns: 1fr; }
-    .hero-l { padding: 48px 24px; }
-    .hero-r { padding: 48px 24px; }
+    .hero-l, .hero-r { padding: 48px 24px; }
     .hero-h1 { font-size: 40px; }
     .svc-grid { grid-template-columns: 1fr 1fr; }
     .sc { border-bottom: 1px solid var(--rule); }
@@ -254,7 +183,7 @@
     .pos-l { border-right: none; border-bottom: 1px solid var(--rule); padding: 40px 24px; }
     .pos-r { padding: 40px 24px; }
     .mkt-grid { grid-template-columns: 1fr; }
-    .mc { border-right: none; border-bottom: 1px solid var(--rule); }
+    .mc { border-right: none; border-bottom: 1px solid var(--rule); padding: 32px 24px; }
     .contact-band { grid-template-columns: 1fr; padding: 48px 24px; }
     .ct-l { border-right: none; border-bottom: 1px solid var(--rule-dk); padding-right: 0; padding-bottom: 40px; margin-bottom: 40px; }
     .ct-r { padding-left: 0; }
@@ -266,7 +195,6 @@
 </head>
 <body>
 
-<!-- ── Nav ── -->
 <nav>
   <a href="#" class="logo-lockup">
     <svg width="28" height="28" viewBox="0 0 36 36" fill="none" aria-hidden="true">
@@ -275,9 +203,9 @@
       <rect x="1" y="20" width="15" height="15" fill="#1A1A18"/>
       <rect x="20" y="20" width="15" height="15" stroke="#1A1A18" stroke-width="1.5"/>
     </svg>
-    <div class="logo-text">
-      <span class="logo-word">PELSTOW</span>
-      <span class="logo-sub">Consulting</span>
+    <div>
+      <div class="logo-word">PELSTOW</div>
+      <div class="logo-sub">Consulting</div>
     </div>
   </a>
   <div class="nav-links">
@@ -288,7 +216,6 @@
   </div>
 </nav>
 
-<!-- ── Hero ── -->
 <section class="hero">
   <div class="hero-l">
     <div>
@@ -300,73 +227,29 @@
   <div class="hero-r">
     <p class="hero-body">Pelstow helps mid-market businesses navigate complex markets, define where they compete, and build strategies that hold up under pressure. Independent. Rigorous. Direct.</p>
     <div class="stats">
-      <div class="stat">
-        <div class="stat-n">4</div>
-        <div class="stat-l">Practice areas</div>
-      </div>
-      <div class="stat">
-        <div class="stat-n">Global</div>
-        <div class="stat-l">Market reach</div>
-      </div>
+      <div class="stat"><div class="stat-n">4</div><div class="stat-l">Practice areas</div></div>
+      <div class="stat"><div class="stat-n">Global</div><div class="stat-l">Market reach</div></div>
     </div>
   </div>
 </section>
 
-<!-- ── Services ── -->
 <section id="services">
   <div class="sec-hd">
-    <span class="label">What we do</span>
-    <span class="label" style="color: #D0CFC6;">Four practice areas</span>
+    <span class="sec-hl">What we do</span>
+    <span class="sec-hl" style="color:#C8C7BE;">Four practice areas</span>
   </div>
   <div class="svc-grid">
-    <div class="sc">
-      <div class="sn">01</div>
-      <div class="st">Strategy</div>
-      <div class="sd">Most strategies fail before they're executed — because they were built on consensus, not conviction. We work with leadership teams to make sharper choices about where to compete, what to stop doing, and how to build positions that are genuinely hard to replicate.</div>
-      <div class="tags">
-        <span class="tag">Market entry &amp; positioning</span>
-        <span class="tag">Portfolio decisions</span>
-        <span class="tag">Growth architecture</span>
-      </div>
-    </div>
-    <div class="sc">
-      <div class="sn">02</div>
-      <div class="st">Markets</div>
-      <div class="sd">Markets don't wait for your planning cycle. We provide the kind of commercial intelligence that changes how leadership teams see their competitive environment — who's moving, what's shifting, and where the real opportunity actually sits.</div>
-      <div class="tags">
-        <span class="tag">Competitive landscape</span>
-        <span class="tag">Customer segmentation</span>
-        <span class="tag">Opportunity mapping</span>
-      </div>
-    </div>
-    <div class="sc">
-      <div class="sn">03</div>
-      <div class="st">Intelligence</div>
-      <div class="sd">Most companies are reacting to information their competitors already have. We build ongoing intelligence capabilities — supplier, customer, and industry — that turn raw signal into structured insight before it becomes conventional wisdom.</div>
-      <div class="tags">
-        <span class="tag">Supplier &amp; customer intel</span>
-        <span class="tag">Industry signal tracking</span>
-        <span class="tag">Strategic monitoring</span>
-      </div>
-    </div>
-    <div class="sc">
-      <div class="sn">04</div>
-      <div class="st">Analytics</div>
-      <div class="sd">We turn data into decisions. Not dashboards, not decks — the answers that change how leadership teams think and where they act.</div>
-      <div class="tags">
-        <span class="tag">Commercial data modelling</span>
-        <span class="tag">Customer value analysis</span>
-        <span class="tag">Pricing &amp; margin insight</span>
-      </div>
-    </div>
+    <div class="sc"><div class="sn">01</div><div class="st">Strategy</div><div class="sd">Most strategies fail before they're executed — because they were built on consensus, not conviction. We work with leadership teams to make sharper choices about where to compete, what to stop doing, and how to build positions that are genuinely hard to replicate.</div><div class="tags"><span class="tag">Market entry &amp; positioning</span><span class="tag">Portfolio decisions</span><span class="tag">Growth architecture</span></div></div>
+    <div class="sc"><div class="sn">02</div><div class="st">Markets</div><div class="sd">Markets don't wait for your planning cycle. We provide the kind of commercial intelligence that changes how leadership teams see their competitive environment — who's moving, what's shifting, and where the real opportunity actually sits.</div><div class="tags"><span class="tag">Competitive landscape</span><span class="tag">Customer segmentation</span><span class="tag">Opportunity mapping</span></div></div>
+    <div class="sc"><div class="sn">03</div><div class="st">Intelligence</div><div class="sd">Most companies are reacting to information their competitors already have. We build ongoing intelligence capabilities — supplier, customer, and industry — that turn raw signal into structured insight before it becomes conventional wisdom.</div><div class="tags"><span class="tag">Supplier &amp; customer intel</span><span class="tag">Industry signal tracking</span><span class="tag">Strategic monitoring</span></div></div>
+    <div class="sc"><div class="sn">04</div><div class="st">Analytics</div><div class="sd">We turn data into decisions. Not dashboards, not decks — the answers that change how leadership teams think and where they act.</div><div class="tags"><span class="tag">Commercial data modelling</span><span class="tag">Customer value analysis</span><span class="tag">Pricing &amp; margin insight</span></div></div>
   </div>
 </section>
 
-<!-- ── Positioning ── -->
 <section id="about">
   <div class="pos">
     <div class="pos-l">
-      <div class="label" style="margin-bottom: 20px;">Our approach</div>
+      <div class="plbl">Our approach</div>
       <div class="pos-bar"></div>
       <div class="pos-h">We don't<br>over-engineer<br>the answer.</div>
       <div class="pts">
@@ -378,7 +261,7 @@
     </div>
     <div class="pos-r">
       <div>
-        <div class="label" style="margin-bottom: 20px;">Why Pelstow</div>
+        <div class="plbl">Why Pelstow</div>
         <p class="pos-body">Large consultancies bring large teams, long timelines, and conclusions shaped by methodology. Pelstow works differently — closer to how an experienced operating executive thinks than how a consulting firm bills.<br><br>We work across industries where markets are complex, competition is structural, and the cost of a wrong call is high. Our clients are mid-market businesses that need rigorous answers fast, without the overhead. We keep engagements lean, focused, and built around the decision — not the deliverable.</p>
       </div>
       <div class="pullquote">
@@ -388,67 +271,38 @@
   </div>
 </section>
 
-<!-- ── Sectors ── -->
 <section id="sectors">
   <div class="sec-hd">
-    <span class="label">Sectors we know</span>
-    <span class="label" style="color: #D0CFC6;">Where we work</span>
+    <span class="sec-hl">Sectors we know</span>
+    <span class="sec-hl" style="color:#C8C7BE;">Where we work</span>
   </div>
   <div class="mkt-grid">
-    <div class="mc">
-      <div class="mbar"><div class="mfill" style="width:85%;"></div></div>
-      <div class="ml">Mobility &amp; Automotive</div>
-      <div class="md">One of the most structurally complex industries on earth — and one of the most consequential to get wrong. We understand the supply chain structure, the relationships that hold it together, and who influences at every level — including how electrification and new commercial pressures are reshaping it.</div>
-      <div class="tags" style="margin-top: 20px;">
-        <span class="tag">OEM &amp; tier strategy</span>
-        <span class="tag">Electrification transition</span>
-        <span class="tag">Supply chain intelligence</span>
-      </div>
-    </div>
-    <div class="mc">
-      <div class="mbar"><div class="mfill" style="width:65%;"></div></div>
-      <div class="ml">Electrical &amp; Electronics</div>
-      <div class="md">Demand is accelerating and the competitive landscape is shifting faster than most roadmaps can track. We help businesses understand where the market is going, who's winning, and what it takes to hold a defensible position in a sector that doesn't slow down.</div>
-      <div class="tags" style="margin-top: 20px;">
-        <span class="tag">Market positioning</span>
-        <span class="tag">Demand intelligence</span>
-        <span class="tag">Competitive landscape</span>
-      </div>
-    </div>
-    <div class="mc">
-      <div class="mbar"><div class="mfill" style="width:50%;"></div></div>
-      <div class="ml">Industrial &amp; Emerging</div>
-      <div class="md">The most interesting opportunities rarely sit inside your existing market. We work with businesses entering adjacent sectors — helping them move fast, avoid the obvious mistakes, and build positions before the market prices them in.</div>
-      <div class="tags" style="margin-top: 20px;">
-        <span class="tag">Adjacent market entry</span>
-        <span class="tag">Opportunity assessment</span>
-        <span class="tag">Early position strategy</span>
-      </div>
-    </div>
+    <div class="mc"><div class="mbar"><div class="mfill" style="width:85%;"></div></div><div class="ml">Mobility &amp; Automotive</div><div class="md">One of the most structurally complex industries on earth — and one of the most consequential to get wrong. We understand the supply chain structure, the relationships that hold it together, and who influences at every level — including how electrification and new commercial pressures are reshaping it.</div><div class="tags" style="margin-top:20px;"><span class="tag">OEM &amp; tier strategy</span><span class="tag">Electrification transition</span><span class="tag">Supply chain intelligence</span></div></div>
+    <div class="mc"><div class="mbar"><div class="mfill" style="width:65%;"></div></div><div class="ml">Electrical &amp; Electronics</div><div class="md">Demand is accelerating and the competitive landscape is shifting faster than most roadmaps can track. We help businesses understand where the market is going, who's winning, and what it takes to hold a defensible position in a sector that doesn't slow down.</div><div class="tags" style="margin-top:20px;"><span class="tag">Market positioning</span><span class="tag">Demand intelligence</span><span class="tag">Competitive landscape</span></div></div>
+    <div class="mc"><div class="mbar"><div class="mfill" style="width:50%;"></div></div><div class="ml">Industrial &amp; Emerging</div><div class="md">The most interesting opportunities rarely sit inside your existing market. We work with businesses entering adjacent sectors — helping them move fast, avoid the obvious mistakes, and build positions before the market prices them in.</div><div class="tags" style="margin-top:20px;"><span class="tag">Adjacent market entry</span><span class="tag">Opportunity assessment</span><span class="tag">Early position strategy</span></div></div>
   </div>
 </section>
 
-<!-- ── Contact ── -->
 <section id="contact" class="contact-band">
   <div class="ct-l">
     <div>
-      <div class="label-dk" style="margin-bottom: 20px;">Get in touch</div>
+      <div class="clbl">Get in touch</div>
       <div class="ct-h">Let's talk about<br>what you're<br>trying to solve.</div>
       <p class="ct-body">We don't do long sales processes. If there's a fit, we'll know quickly — and if there isn't, we'll tell you that too. Either way, it starts with a conversation.</p>
     </div>
     <div>
-      <div class="label-dk" style="margin-bottom: 16px;">Engagement types</div>
-      <div style="display: flex; flex-direction: column;">
-        <div style="display:flex;gap:12px;padding:10px 0;border-top:0.5px solid var(--rule-dk);align-items:baseline;"><span style="font-family:var(--mono);font-size:8px;color:var(--braun);min-width:16px;">—</span><span style="font-size:11px;color:var(--muted-dk);font-weight:300;">Market assessment</span></div>
-        <div style="display:flex;gap:12px;padding:10px 0;border-top:0.5px solid var(--rule-dk);align-items:baseline;"><span style="font-family:var(--mono);font-size:8px;color:var(--braun);min-width:16px;">—</span><span style="font-size:11px;color:var(--muted-dk);font-weight:300;">Strategy review</span></div>
-        <div style="display:flex;gap:12px;padding:10px 0;border-top:0.5px solid var(--rule-dk);align-items:baseline;"><span style="font-family:var(--mono);font-size:8px;color:var(--braun);min-width:16px;">—</span><span style="font-size:11px;color:var(--muted-dk);font-weight:300;">Commercial due diligence</span></div>
-        <div style="display:flex;gap:12px;padding:10px 0;border-top:0.5px solid var(--rule-dk);align-items:baseline;"><span style="font-family:var(--mono);font-size:8px;color:var(--braun);min-width:16px;">—</span><span style="font-size:11px;color:var(--muted-dk);font-weight:300;">Advisory retainer</span></div>
+      <div class="clbl">Engagement types</div>
+      <div class="clist">
+        <div class="cli"><span class="clin">—</span><span class="clit">Market assessment</span></div>
+        <div class="cli"><span class="clin">—</span><span class="clit">Strategy review</span></div>
+        <div class="cli"><span class="clin">—</span><span class="clit">Commercial due diligence</span></div>
+        <div class="cli"><span class="clin">—</span><span class="clit">Advisory retainer</span></div>
       </div>
     </div>
   </div>
   <div class="ct-r">
     <div id="contact-form-wrap">
-      <div class="label-dk" style="margin-bottom: 20px;">Send a message</div>
+      <div class="clbl">Send a message</div>
       <form id="contact-form" novalidate>
         <div class="form-grid">
           <div class="form-field">
@@ -470,7 +324,7 @@
         </div>
         <label class="human-check">
           <input type="checkbox" id="f-human">
-          <span>I'm not a robot</span>
+          <span>I'm a real person, I promise</span>
         </label>
         <button type="submit" class="form-submit" id="f-submit" disabled>Send message</button>
       </form>
@@ -484,7 +338,6 @@
   </div>
 </section>
 
-<!-- ── Footer ── -->
 <footer>
   <a href="#" class="logo-lockup" style="text-decoration:none;">
     <svg width="18" height="18" viewBox="0 0 36 36" fill="none" aria-hidden="true">
@@ -493,7 +346,7 @@
       <rect x="1" y="20" width="15" height="15" fill="#4A4A44"/>
       <rect x="20" y="20" width="15" height="15" stroke="#4A4A44" stroke-width="1.5"/>
     </svg>
-    <span class="ft" style="letter-spacing:0.12em;">PELSTOW</span>
+    <span class="ft-logo">PELSTOW</span>
   </a>
   <span class="ft">© 2025 Pelstow Consulting</span>
   <span class="ft">pelstow.com</span>
