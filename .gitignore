@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# Design-process files: kept locally, not published on pelstow.com
+.impeccable/
+DESIGN.md
+PRODUCT.md
+refresh/
+
+# Image provenance sidecars (local record only)
+*.webp.json
+*.png.json

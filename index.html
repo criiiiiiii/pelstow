@@ -5,19 +5,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pelstow — Strategy. Markets. Intelligence. Analytics.</title>
 <meta name="description" content="Pelstow is a boutique strategy consultancy helping mid-market businesses navigate complex markets, define where they compete, and build strategies that hold up under pressure.">
+<meta name="theme-color" content="#1A1A18">
+<link rel="canonical" href="https://pelstow.com/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pelstow">
+<meta property="og:url" content="https://pelstow.com/">
+<meta property="og:title" content="Pelstow — Markets understood. Decisions made.">
+<meta property="og:description" content="Boutique strategy consultancy for mid-market businesses in mobility, electronics and industrial markets. Independent. Rigorous. Direct.">
+<meta property="og:image" content="https://pelstow.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Pelstow: Markets understood. Decisions made.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pelstow — Markets understood. Decisions made.">
+<meta name="twitter:description" content="Boutique strategy consultancy for mid-market businesses. Independent. Rigorous. Direct.">
+<meta name="twitter:image" content="https://pelstow.com/og-image.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 36 36'><rect width='36' height='36' fill='%23F5F4F0'/><rect x='1' y='1' width='15' height='15' stroke='%231A1A18' stroke-width='2' fill='none'/><rect x='20' y='1' width='15' height='15' fill='%23D4570A'/><rect x='1' y='20' width='15' height='15' fill='%231A1A18'/><rect x='20' y='20' width='15' height='15' stroke='%231A1A18' stroke-width='2' fill='none'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script>if(!navigator.webdriver)document.documentElement.classList.add('motion');</script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; scroll-padding-top: 72px; -webkit-text-size-adjust: 100%; }
 
   :root {
     --obsidian: #1A1A18;
     --chalk:    #F5F4F0;
     --braun:    #D4570A;
+    --braun-ink:  #A8430A;   /* small orange text on chalk (AA) */
     --slate:    #7A7A72;
+    --slate-ink:#5E5E57;     /* small secondary text on chalk (AA) */
     --charcoal: #2E2E2A;
     --rule:     #C8C7BE;
     --rule-dk:  #333330;
@@ -25,180 +43,302 @@
     --muted-dk: #B0B0A8;
     --ghost:    #9A9A92;
     --light:    #D8D7CE;
-    --sans:     'IBM Plex Sans', sans-serif;
-    --mono:     'IBM Plex Mono', monospace;
+    --field-dk: #24241F;
+    --braun-lt: #E46A26;     /* small orange text on obsidian (AA) */
+    --sans:     'IBM Plex Sans', system-ui, sans-serif;
+    --mono:     'IBM Plex Mono', ui-monospace, monospace;
+    --gut:      clamp(20px, 4vw, 48px);
+    --sec-y:    clamp(64px, 9vw, 128px);
+    --ease:     cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   body {
     font-family: var(--sans);
     background: var(--chalk);
     color: var(--obsidian);
-    font-size: 15px;
+    font-size: 17px;
     line-height: 1.6;
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
+  ::selection { background: #F0B48C; color: var(--obsidian); }
+  input, textarea { caret-color: var(--braun); }
+  html { scrollbar-color: var(--slate) var(--chalk); }
+  a { color: inherit; }
+  h1, h2, h3 { font-weight: 600; letter-spacing: -0.03em; line-height: 1.02; text-wrap: balance; }
+  p { text-wrap: pretty; }
+  :focus-visible { outline: 2px solid var(--braun); outline-offset: 3px; }
 
-  .mono { font-family: var(--mono); }
+  .skip { position: absolute; left: -9999px; top: 12px; z-index: 300; background: var(--obsidian); color: var(--chalk); padding: 10px 16px; font-family: var(--mono); font-size: 13px; text-decoration: none; }
+  .skip:focus { left: 12px; }
+
+  .tag { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+  .arr { width: 14px; height: 12px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: square; transition: transform .3s var(--ease); }
+
+  /* ── Buttons ── */
+  .btn { display: inline-flex; align-items: center; gap: 12px; font-family: var(--sans); font-size: 19px; font-weight: 600; letter-spacing: -0.01em; text-decoration: none; padding: 14px 24px; border: 1px solid var(--braun); background: var(--braun); color: var(--obsidian); cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
+  .btn:hover { background: var(--chalk); color: var(--obsidian); border-color: var(--chalk); }
+  .btn:hover .arr, .link:hover .arr { transform: translateX(4px); }
+  .link { display: inline-flex; align-items: center; gap: 10px; font-weight: 500; text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 3px; }
 
   /* ── Nav ── */
-  nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px 48px;
-    border-bottom: 1px solid var(--rule);
-    position: sticky;
-    top: 0;
-    background: var(--chalk);
-    z-index: 100;
+  .nav { position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; height: 68px; padding: 0 var(--gut); background: var(--chalk); border-bottom: 1px solid var(--obsidian); }
+  .logo-lockup { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .logo-word { font-size: 17px; font-weight: 500; letter-spacing: 0.12em; line-height: 1; }
+  .logo-sub  { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; color: var(--slate-ink); margin-top: 4px; text-transform: uppercase; }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-link { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 400; color: var(--muted); text-decoration: none; padding: 6px 0; border-bottom: 1px solid transparent; transition: border-color .2s, color .2s; }
+  .nav-link:hover { color: var(--obsidian); border-color: var(--braun); }
+  .nav-cta { font-family: var(--mono); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; color: var(--chalk); background: var(--obsidian); border: 1px solid var(--obsidian); padding: 10px 18px; text-decoration: none; transition: background .2s, color .2s; }
+  .cta-short { display: none; }
+  .nav-cta:hover { background: var(--chalk); color: var(--obsidian); }
+
+  /* ── Hero: statement band on sector columns ── */
+  .hero { display: grid; grid-template-rows: auto 1fr; min-height: calc(100svh - 68px); border-bottom: 1px solid var(--obsidian); }
+  .h-band { background: var(--light); display: grid; grid-template-columns: 3fr 2fr; gap: 32px clamp(32px, 5vw, 80px); align-items: end; padding: clamp(36px, 4vw, 56px) var(--gut) clamp(32px, 3.4vw, 48px); border-bottom: 1px solid var(--obsidian); }
+  .hero-h1 { font-size: clamp(3.1rem, min(7.4vw, 10.5svh), 6rem); font-weight: 600; letter-spacing: -0.04em; line-height: 0.96; max-width: 9.5ch; }
+  .hero-h1 span { display: block; }
+  .hero-h1 .lt { font-weight: 300; }
+  .h-side { display: flex; flex-direction: column; gap: 22px; align-items: flex-start; max-width: 40ch; }
+  .h-motto { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+  .hero-lede { font-size: clamp(1.1rem, 1.45vw, 1.3rem); line-height: 1.5; font-weight: 300; color: var(--charcoal); }
+  .hero-actions { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; margin-top: 6px; }
+  .h-cols { display: grid; grid-template-columns: repeat(3, 1fr); list-style: none; }
+  .h-col { display: flex; }
+  .h-col a { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; padding: clamp(28px, 3vw, 44px) clamp(20px, 3vw, 44px); text-decoration: none; border-right: 1px solid var(--obsidian); min-height: clamp(200px, 30svh, 340px); }
+  .h-col:last-child a { border-right: none; }
+  @media (min-width: 901px) and (max-height: 780px) { .h-col a { min-height: 0; gap: 18px; padding-top: 24px; padding-bottom: 20px; } .h-col h2 { font-size: clamp(1.5rem, 2.2vw, 2rem); } .h-col p { font-size: 19px; } }
+  .h-col:nth-child(1) a { background: var(--braun); color: var(--obsidian); }
+  .h-col:nth-child(2) a { background: var(--obsidian); color: var(--chalk); }
+  .h-col:nth-child(3) a { background: var(--ghost); color: var(--obsidian); }
+  .h-col h2 { font-size: clamp(1.7rem, 2.6vw, 2.4rem); letter-spacing: -0.03em; line-height: 1.02; max-width: 11ch; }
+  .h-col p { font-size: 19px; font-weight: 600; line-height: 1.35; letter-spacing: -0.01em; max-width: 30ch; }
+  .h-col:nth-child(2) p { color: #DCDBD4; }
+  .h-more { display: flex; justify-content: flex-end; align-items: center; padding-top: 16px; border-top: 1px solid currentColor; }
+  .h-more .arr { width: 20px; height: 16px; }
+  .h-col a:hover .arr, .h-col a:focus-visible .arr { transform: translateX(6px); }
+  .h-col:nth-child(1) a:hover { background: #DE6318; }
+  .h-col:nth-child(2) a:hover { background: #242422; }
+  .h-col:nth-child(3) a:hover { background: #A6A69E; }
+  .h-col a:focus-visible { outline: 2px solid var(--obsidian); outline-offset: -6px; }
+  .h-col:nth-child(2) a:focus-visible { outline-color: var(--braun); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .motion .h-col a { animation: rise 0.9s var(--ease) both; }
+    .motion .h-col:nth-child(1) a { animation-delay: .1s; }
+    .motion .h-col:nth-child(2) a { animation-delay: .22s; }
+    .motion .h-col:nth-child(3) a { animation-delay: .34s; }
+    @keyframes rise { from { clip-path: inset(100% 0 0 0); } to { clip-path: inset(0 0 0 0); } }
   }
-  .logo-lockup { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-  .logo-word   { font-family: var(--sans); font-size: 16px; font-weight: 500; letter-spacing: 0.12em; color: var(--obsidian); text-transform: uppercase; line-height: 1; }
-  .logo-sub    { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; color: var(--slate); margin-top: 3px; text-transform: uppercase; }
-  .nav-links   { display: flex; gap: 32px; align-items: center; }
-  .nav-link    { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate); text-decoration: none; transition: color 0.15s; }
-  .nav-link:hover { color: var(--obsidian); }
-  .nav-cta     { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--chalk); background: var(--obsidian); padding: 9px 18px; text-decoration: none; transition: background 0.15s; }
-  .nav-cta:hover { background: var(--braun); }
 
-  /* ── Hero ── */
-  .hero { display: grid; grid-template-columns: 3fr 2fr; border-bottom: 1px solid var(--rule); min-height: 420px; }
-  .hero-l { padding: 64px 48px; border-right: 1px solid var(--rule); display: flex; flex-direction: column; justify-content: space-between; }
-  .hero-r { padding: 64px 48px; background: var(--obsidian); display: flex; flex-direction: column; justify-content: space-between; }
-  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); margin-bottom: 24px; }
-  .hero-h1 { font-size: 56px; font-weight: 300; line-height: 1.05; letter-spacing: -0.02em; color: var(--obsidian); }
-  .hero-h1 strong { font-weight: 500; }
-  .hero-tagline { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; color: var(--braun); margin-top: 32px; }
-  .hero-body { font-size: 15px; line-height: 1.85; color: #E8E7E0; font-weight: 300; margin-bottom: 32px; }
-  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--charcoal); border-top: 1px solid var(--charcoal); }
-  .stat { background: var(--obsidian); padding: 20px; text-align: center; }
-  .stat-n { font-family: var(--mono); font-size: 24px; font-weight: 500; color: var(--chalk); }
-  .stat-l { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--slate); margin-top: 4px; }
+  /* ── Section scaffolding ── */
+  .sec { padding: var(--sec-y) var(--gut); border-bottom: 1px solid var(--obsidian); }
+  .sec-head { display: grid; grid-template-columns: 3fr 2fr; gap: 32px clamp(32px, 5vw, 80px); align-items: end; margin-bottom: clamp(40px, 6vw, 72px); }
+  .h2 { font-size: clamp(2.2rem, 4.6vw, 4rem); max-width: 16ch; }
+  .sec-intro { font-size: 18px; font-weight: 300; line-height: 1.6; color: var(--muted); max-width: 46ch; }
+  .dark { background: var(--obsidian); color: var(--chalk); border-bottom-color: var(--rule-dk); }
+  .dark .sec-intro { color: var(--muted-dk); }
 
-  /* ── Section header ── */
-  .sec-hd { padding: 20px 48px; border-bottom: 1px solid var(--rule); display: flex; justify-content: space-between; align-items: baseline; }
-  .sec-hl { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--slate); }
+  /* ── Practice areas: ruled rows ── */
+  .rows { list-style: none; border-top: 1px solid var(--obsidian); }
+  .row { display: grid; grid-template-columns: minmax(200px, 1.1fr) 2fr minmax(220px, 1fr); gap: 24px clamp(24px, 4vw, 64px); padding: clamp(28px, 3.4vw, 44px) 0; border-bottom: 1px solid var(--rule); position: relative; }
+  .row-name { display: flex; align-items: center; gap: 16px; font-size: clamp(1.7rem, 2.8vw, 2.5rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1; align-self: start; }
+  .row-name::before { content: ""; width: 0.42em; height: 0.42em; flex: none; border: 1.5px solid var(--obsidian); background: transparent; transition: background .25s var(--ease), border-color .25s var(--ease); }
+  .row:hover .row-name::before, .row:focus-within .row-name::before { background: var(--braun); border-color: var(--braun); }
+  .row-desc { font-size: 17px; font-weight: 300; line-height: 1.65; color: var(--muted); max-width: 58ch; }
+  .row-tags { list-style: none; display: flex; flex-direction: column; }
+  .row-tags li { padding: 8px 0; border-top: 1px solid var(--rule); color: var(--slate-ink); }
+  .row-tags li:last-child { border-bottom: 1px solid var(--rule); }
 
-  /* ── Services ── */
-  .svc-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--rule); }
-  .sc { padding: 32px 28px; border-right: 1px solid var(--rule); display: flex; flex-direction: column; }
-  .sc:last-child { border-right: none; }
-  .sn { font-family: var(--mono); font-size: 11px; color: var(--braun); margin-bottom: 18px; letter-spacing: 0.08em; }
-  .st { font-size: 16px; font-weight: 500; color: var(--obsidian); margin-bottom: 12px; }
-  .sd { font-size: 13px; color: var(--muted); line-height: 1.75; font-weight: 300; flex: 1; }
-  .tags { margin-top: 24px; display: flex; flex-direction: column; }
-  .tag { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: #5A5A54; padding: 6px 0; border-top: 0.5px solid var(--rule); }
+  /* ── Approach: four cells ── */
+  .appr { display: grid; grid-template-columns: 2fr 3fr; gap: clamp(40px, 6vw, 96px); }
+  .appr-body { font-size: 18px; font-weight: 300; line-height: 1.7; color: var(--muted-dk); max-width: 48ch; margin-top: 28px; }
+  .appr-body + .appr-body { margin-top: 18px; }
+  .quad { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--rule-dk); border-left: 1px solid var(--rule-dk); align-self: start; }
+  .q { padding: clamp(24px, 3vw, 40px); border-right: 1px solid var(--rule-dk); border-bottom: 1px solid var(--rule-dk); min-height: 200px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }
+  .q:nth-child(2) { background: var(--braun); color: var(--obsidian); }
+  .q:nth-child(3) { background: var(--chalk); color: var(--obsidian); }
+  .q-h { font-size: clamp(1.35rem, 2vw, 1.75rem); font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; }
+  .q-p { font-size: 16px; font-weight: 400; line-height: 1.55; color: var(--muted-dk); }
+  .q:nth-child(2) .q-p { color: var(--obsidian); font-weight: 600; font-size: 20px; line-height: 1.35; }
+  .q:nth-child(3) .q-p { color: var(--muted); }
+  .pull { margin-top: clamp(64px, 9vw, 120px); padding-top: clamp(32px, 4vw, 48px); border-top: 2px solid var(--braun); }
+  .pull blockquote { font-size: clamp(2.2rem, 5.6vw, 5rem); font-weight: 300; letter-spacing: -0.035em; line-height: 1.02; max-width: 18ch; }
+  .pull blockquote b { font-weight: 600; color: var(--braun); }
 
-  /* ── Positioning ── */
-  .pos { display: grid; grid-template-columns: 1fr 2fr; border-bottom: 1px solid var(--rule); }
-  .pos-l { padding: 56px 48px; border-right: 1px solid var(--rule); }
-  .pos-r { padding: 56px 48px; display: flex; flex-direction: column; justify-content: space-between; }
-  .pos-bar { width: 28px; height: 2px; background: var(--braun); margin-bottom: 28px; }
-  .pos-h { font-size: 28px; font-weight: 300; line-height: 1.3; color: var(--obsidian); letter-spacing: -0.01em; margin-bottom: 24px; }
-  .pos-body { font-size: 14px; line-height: 1.9; color: #2A2A24; font-weight: 300; }
-  .pts { margin-top: 32px; }
-  .pt { display: flex; gap: 14px; padding: 12px 0; border-top: 0.5px solid var(--rule); align-items: baseline; }
-  .ptn { font-family: var(--mono); font-size: 10px; color: var(--braun); min-width: 16px; }
-  .ptx { font-size: 13px; color: var(--muted); font-weight: 300; line-height: 1.5; }
-  .pullquote { border-top: 2px solid var(--braun); padding-top: 24px; margin-top: 40px; }
-  .pq-text { font-size: 24px; font-weight: 300; line-height: 1.35; color: var(--obsidian); letter-spacing: -0.01em; }
-  .pq-text em { font-style: normal; font-weight: 500; }
-  .plbl { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slate); margin-bottom: 20px; }
+  /* ── Process: four steps on a rule ── */
+  .steps { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); }
+  .step { position: relative; padding: 44px clamp(16px, 2vw, 32px) 0 0; border-top: 2px solid var(--obsidian); }
+  .step::before { content: ""; position: absolute; top: -8px; left: 0; width: 14px; height: 14px; background: var(--chalk); border: 2px solid var(--obsidian); }
+  .step:last-child::before { background: var(--braun); border-color: var(--braun); }
+  .step-n { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--braun-ink); letter-spacing: 0.06em; }
+  .step-h { font-size: clamp(1.4rem, 2.2vw, 1.9rem); margin: 12px 0 14px; letter-spacing: -0.025em; }
+  .step-p { font-size: 16px; font-weight: 300; line-height: 1.65; color: var(--muted); max-width: 30ch; }
+  .terms { margin-top: clamp(48px, 6vw, 80px); display: flex; justify-content: space-between; align-items: center; gap: 24px 48px; flex-wrap: wrap; padding: 28px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+  .terms p { font-size: 20px; font-weight: 500; letter-spacing: -0.01em; max-width: 52ch; }
+  .terms .link { color: var(--obsidian); font-size: 16px; }
+
+  /* ── Proof (placeholders) ── */
+  .ledger { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .ledger col.c1 { width: 24%; } .ledger col.c3 { width: 24%; }
+  .ledger thead th { text-align: left; font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--slate-ink); padding: 0 32px 14px 0; border-bottom: 1px solid var(--obsidian); }
+  .ledger td, .ledger tbody th { padding: 36px 32px 36px 0; border-bottom: 1px solid var(--rule); vertical-align: top; text-align: left; font-size: 17px; font-weight: 300; line-height: 1.6; color: var(--muted); }
+  .ledger td p { max-width: 60ch; }
+  .ledger td p + p { margin-top: 12px; }
+  .ledger .l-q { font-weight: 500; color: var(--obsidian); }
+  .l-sector span { display: block; }
+  .l-sec { font-size: clamp(1.3rem, 1.8vw, 1.6rem); font-weight: 600; letter-spacing: -0.02em; line-height: 1.1; color: var(--obsidian); margin-bottom: 12px; }
+  .l-type { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--braun-ink); margin-bottom: 6px; }
+  .l-client { font-size: 16px; color: var(--slate-ink); }
+  .ledger .out b { display: block; font-size: clamp(2.2rem, 3.6vw, 3.25rem); font-weight: 600; letter-spacing: -0.035em; line-height: 1; color: var(--obsidian); margin-bottom: 12px; font-variant-numeric: tabular-nums; }
+  .ledger .out span { display: block; font-size: 16px; line-height: 1.5; color: var(--muted); max-width: 26ch; }
+  .quotes { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: clamp(64px, 8vw, 112px); border-top: 2px solid var(--braun); }
+  .quote { padding: 36px clamp(20px, 2.6vw, 40px) 8px 0; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; }
+  .quote + .quote { padding-left: clamp(20px, 2.6vw, 40px); border-left: 1px solid var(--rule); }
+  .quote blockquote { font-size: clamp(1.05rem, 1.25vw, 1.2rem); font-weight: 300; line-height: 1.6; color: var(--obsidian); }
+  .quote blockquote::before { content: "\201C"; display: block; font-size: 3.5rem; font-weight: 600; line-height: 0.8; color: var(--braun); margin-bottom: 8px; }
+  .quote cite { font-style: normal; font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--slate-ink); line-height: 1.7; display: block; padding-top: 16px; border-top: 1px solid var(--rule); }
+  .quote cite b { color: var(--obsidian); font-weight: 500; }
 
   /* ── Sectors ── */
-  .mkt-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--rule); }
-  .mc { padding: 36px 48px; border-right: 1px solid var(--rule); display: flex; flex-direction: column; }
-  .mc:last-child { border-right: none; }
-  .mbar { width: 100%; height: 2px; background: var(--light); margin-bottom: 24px; }
-  .mfill { height: 2px; background: var(--braun); }
-  .ml { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--obsidian); margin-bottom: 10px; font-weight: 500; }
-  .md { font-size: 13px; color: var(--muted); font-weight: 300; line-height: 1.75; flex: 1; }
+  .sectors { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--rule-dk); }
+  .sector { padding: 40px clamp(20px, 3vw, 44px) 8px; border-right: 1px solid var(--rule-dk); display: flex; flex-direction: column; }
+  .sector:first-child { padding-left: 0; }
+  .sector:last-child { border-right: none; padding-right: 0; }
+  .sector h3 { font-size: clamp(1.6rem, 2.4vw, 2.2rem); max-width: 10ch; margin-bottom: 20px; }
+  .sector p { font-size: 16px; font-weight: 300; line-height: 1.7; color: var(--muted-dk); flex: 1; }
+  .sector .row-tags { margin-top: 28px; }
+  .sector .row-tags li { color: var(--ghost); border-color: var(--rule-dk); }
+
+  /* ── Founder ── */
+  .founder { display: grid; grid-template-columns: minmax(260px, 2fr) 3fr; gap: clamp(40px, 6vw, 96px); align-items: start; }
+  .portrait { aspect-ratio: 4 / 5; border: 1px solid var(--obsidian); background: var(--light); overflow: hidden; }
+  .portrait img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .f-name { font-size: clamp(2.4rem, 4.6vw, 4rem); }
+  .f-role { font-size: 18px; font-weight: 500; color: var(--braun-ink); margin: 14px 0 32px; }
+  .f-bio { font-size: 19px; font-weight: 300; line-height: 1.65; color: var(--muted); max-width: 52ch; }
+  .f-bio + .f-bio { margin-top: 16px; }
+  .facts { list-style: none; margin-top: 40px; border-top: 1px solid var(--obsidian); display: grid; grid-template-columns: 1fr 1fr; }
+  .facts > li { padding: 18px 24px 18px 0; border-bottom: 1px solid var(--rule); }
+  .facts > li:nth-child(2) { padding-left: 24px; border-left: 1px solid var(--rule); }
+  .fact-k { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--slate-ink); }
+  .fact-v { display: block; font-size: 18px; font-weight: 500; margin-top: 6px; }
+  .facts > li.wide { grid-column: 1 / -1; padding-left: 0; border-left: none; }
+  .fact-list { list-style: none; margin-top: 8px; }
+  .fact-list li { position: relative; padding: 4px 0 4px 20px; border: none; font-size: 17px; line-height: 1.5; color: var(--muted); }
+  .fact-list li::before { content: ""; position: absolute; left: 0; top: 0.8em; width: 8px; height: 8px; background: var(--braun); }
 
   /* ── Contact ── */
-  .contact-band { background: var(--obsidian); padding: 72px 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
-  .ct-l { border-right: 1px solid var(--rule-dk); padding-right: 48px; display: flex; flex-direction: column; justify-content: space-between; }
-  .ct-r { padding-left: 48px; }
-  .clbl { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ghost); margin-bottom: 20px; }
-  .ct-h { font-size: 30px; font-weight: 300; color: var(--chalk); letter-spacing: -0.01em; line-height: 1.25; margin-bottom: 16px; }
-  .ct-body { font-size: 14px; color: var(--muted-dk); line-height: 1.85; font-weight: 300; margin-bottom: 32px; }
-  .clist { display: flex; flex-direction: column; }
-  .cli { display: flex; gap: 12px; padding: 12px 0; border-top: 0.5px solid var(--rule-dk); align-items: baseline; }
-  .clin { font-family: var(--mono); font-size: 10px; color: var(--braun); min-width: 16px; }
-  .clit { font-size: 14px; color: #D0D0C8; font-weight: 300; }
+  .contact { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 6vw, 96px); }
+  .ct-h { font-size: clamp(2.4rem, 5vw, 4.4rem); max-width: 12ch; }
+  .ct-h em { font-style: normal; color: var(--braun); }
+  .ct-body { font-size: 18px; font-weight: 300; line-height: 1.7; color: var(--muted-dk); max-width: 44ch; margin-top: 28px; }
+  .ct-sub { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; margin: 48px 0 6px; color: var(--ghost); }
+  .ct-mail { display: inline-block; margin-top: 4px; font-size: clamp(1.3rem, 2vw, 1.6rem); font-weight: 500; letter-spacing: -0.01em; color: var(--chalk); text-decoration: none; border-bottom: 1px solid var(--braun); padding-bottom: 4px; transition: color .2s; }
+  .ct-mail:hover { color: var(--braun-lt); }
+  .clist { list-style: none; }
+  .clist li { display: flex; align-items: center; gap: 14px; padding: 13px 0; border-bottom: 1px solid var(--rule-dk); font-size: 17px; color: #DCDBD4; }
+  .clist li::before { content: ""; width: 8px; height: 8px; background: var(--braun); flex: none; }
 
-  /* ── Form ── */
-  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-  .form-field { display: flex; flex-direction: column; gap: 6px; }
-  .form-field.full { grid-column: 1 / -1; }
-  .form-field label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ghost); }
-  .form-field input,
-  .form-field textarea {
-    background: #2A2A26;
-    border: 0.5px solid #444440;
-    color: var(--chalk);
-    font-family: var(--sans);
-    font-size: 14px;
-    font-weight: 300;
-    padding: 12px 14px;
-    outline: none;
-    transition: border-color 0.15s;
-    resize: none;
-    border-radius: 0;
-    -webkit-appearance: none;
-    width: 100%;
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 16px; }
+  .field { display: flex; flex-direction: column; gap: 8px; }
+  .field.full { grid-column: 1 / -1; }
+  .field label { font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ghost); }
+  .field label .opt { color: var(--muted-dk); text-transform: none; letter-spacing: 0; }
+  .field input, .field textarea {
+    background: var(--field-dk); border: 1px solid #4A4A44; color: var(--chalk);
+    font-family: var(--sans); font-size: 17px; font-weight: 400; padding: 14px 16px;
+    outline: none; border-radius: 0; -webkit-appearance: none; appearance: none; width: 100%; resize: vertical;
+    transition: border-color .2s, background .2s;
   }
-  .form-field input:focus,
-  .form-field textarea:focus { border-color: var(--braun); }
-  .form-field input::placeholder,
-  .form-field textarea::placeholder { color: #5A5A54; }
-  .form-field textarea { min-height: 100px; }
+  .field input:hover, .field textarea:hover { border-color: #6A6A62; }
+  .field input:focus, .field textarea:focus { border-color: var(--braun); background: #2A2A25; }
+  .field input::placeholder, .field textarea::placeholder { color: #93928A; }
+  .field textarea { min-height: 150px; }
+  .field[data-invalid] input, .field[data-invalid] textarea { border-color: #E8875A; }
+  .f-err { font-size: 14px; color: #F0A27A; }
+  .f-err:empty { display: none; }
 
-  .human-check { display: flex; align-items: center; gap: 10px; margin: 16px 0; cursor: pointer; }
-  .human-check input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 16px; height: 16px; border: 0.5px solid #444440; background: transparent; cursor: pointer; flex-shrink: 0; transition: border-color 0.15s, background 0.15s; }
-  .human-check input[type="checkbox"]:checked { background: var(--braun); border-color: var(--braun); background-image: url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4L3.5 6.5L9 1' stroke='%23F5F4F0' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: center; }
-  .human-check span { font-family: var(--mono); font-size: 10px; letter-spacing: 0.08em; color: var(--ghost); text-transform: uppercase; }
-
-  .form-submit { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; padding: 14px 28px; background: var(--braun); color: var(--chalk); border: none; cursor: pointer; width: 100%; transition: opacity 0.15s; margin-top: 4px; }
-  .form-submit:disabled { opacity: 0.35; cursor: not-allowed; }
-  .form-submit:not(:disabled):hover { opacity: 0.88; }
-
-  .form-success { display: none; text-align: center; padding: 40px 0; }
-  .form-success .fs-icon { width: 32px; height: 32px; background: var(--braun); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
-  .form-success p { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ghost); }
+  .human { display: flex; align-items: center; gap: 12px; margin: 24px 0; cursor: pointer; font-size: 15px; color: var(--muted-dk); width: fit-content; }
+  .human input { appearance: none; -webkit-appearance: none; width: 20px; height: 20px; border: 1px solid #6A6A62; background: transparent; cursor: pointer; flex: none; border-radius: 0; transition: border-color .2s, background .2s; }
+  .human input:checked { background: var(--braun) url("data:image/svg+xml,%3Csvg width='12' height='10' viewBox='0 0 12 10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 5L4.5 8.5L11 1' stroke='%231A1A18' stroke-width='1.8'/%3E%3C/svg%3E") no-repeat center; border-color: var(--braun); }
+  .submit { width: 100%; justify-content: center; }
+  .submit:disabled { background: transparent; border-color: #4A4A44; color: var(--ghost); cursor: not-allowed; }
+  .submit:disabled .arr { display: none; }
+  .form-alert { margin-top: 16px; padding: 14px 16px; border: 1px solid #E8875A; color: #F0A27A; font-size: 15px; }
+  .form-alert a { color: inherit; }
+  .form-alert[hidden], .form-success[hidden], #contact-form-wrap[hidden] { display: none; }
+  .form-success { padding: 56px 0; border-top: 2px solid var(--braun); outline: none; }
+  .form-success h3 { font-size: clamp(1.8rem, 3vw, 2.5rem); margin-bottom: 14px; }
+  .form-success p { font-size: 18px; font-weight: 300; color: var(--muted-dk); max-width: 40ch; }
 
   /* ── Footer ── */
-  footer { padding: 20px 48px; background: var(--obsidian); border-top: 1px solid var(--rule-dk); display: flex; justify-content: space-between; align-items: center; }
-  .ft { font-family: var(--mono); font-size: 10px; color: #4A4A44; letter-spacing: 0.06em; }
-  .ft-logo { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--braun); letter-spacing: 0.16em; }
+  footer { padding: 28px var(--gut); background: var(--obsidian); border-top: 1px solid var(--rule-dk); display: flex; justify-content: space-between; align-items: center; gap: 16px; color: var(--ghost); font-family: var(--mono); font-size: 12px; letter-spacing: 0.02em; }
+  .ft-logo { font-family: var(--sans); font-size: 14px; font-weight: 500; color: var(--chalk); letter-spacing: 0.12em; }
+  footer nav { display: flex; gap: 24px; }
+  footer a { text-decoration: none; }
+  footer a:hover { color: var(--chalk); }
 
   /* ── Responsive ── */
+  @media (max-width: 1080px) {
+    .row { grid-template-columns: 1fr 2fr; }
+    .row-tags { grid-column: 2; }
+    .appr { grid-template-columns: 1fr; }
+  }
   @media (max-width: 900px) {
-    nav { padding: 16px 24px; }
     .nav-links .nav-link { display: none; }
-    .hero { grid-template-columns: 1fr; }
-    .hero-l, .hero-r { padding: 48px 24px; }
-    .hero-h1 { font-size: 40px; }
-    .svc-grid { grid-template-columns: 1fr 1fr; }
-    .sc { border-bottom: 1px solid var(--rule); }
-    .pos { grid-template-columns: 1fr; }
-    .pos-l { border-right: none; border-bottom: 1px solid var(--rule); padding: 40px 24px; }
-    .pos-r { padding: 40px 24px; }
-    .mkt-grid { grid-template-columns: 1fr; }
-    .mc { border-right: none; border-bottom: 1px solid var(--rule); padding: 32px 24px; }
-    .contact-band { grid-template-columns: 1fr; padding: 48px 24px; }
-    .ct-l { border-right: none; border-bottom: 1px solid var(--rule-dk); padding-right: 0; padding-bottom: 40px; margin-bottom: 40px; }
-    .ct-r { padding-left: 0; }
-    .sec-hd { padding: 16px 24px; }
+    .hero { min-height: 0; }
+    .h-band { grid-template-columns: 1fr; }
+    .h-cols { grid-template-columns: 1fr; }
+    .h-col a { border-right: none; border-bottom: 1px solid var(--obsidian); min-height: 0; gap: 18px; }
+    .h-col:last-child a { border-bottom: none; }
+    .sec-head { grid-template-columns: 1fr; }
+    .row { grid-template-columns: 1fr; gap: 18px; }
+    .row-tags { grid-column: auto; }
+    .steps { grid-template-columns: 1fr 1fr; row-gap: 56px; }
+    .ledger thead { display: none; }
+    .ledger, .ledger tbody, .ledger tr, .ledger td, .ledger tbody th { display: block; }
+    .ledger colgroup { display: none; }
+    .ledger tr { padding: 24px 0; border-bottom: 1px solid var(--rule); }
+    .ledger td, .ledger tbody th { border: none; padding: 4px 0; }
+    .ledger td.out { margin-top: 12px; }
+    .ledger td[data-label]::before { content: attr(data-label); display: block; font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--slate-ink); margin: 10px 0 4px; }
+    .quotes { grid-template-columns: 1fr; }
+    .quote { padding-right: 0; }
+    .quote + .quote { padding-left: 0; border-left: none; border-top: 1px solid var(--rule); }
+    .sectors { grid-template-columns: 1fr; }
+    .sector, .sector:first-child, .sector:last-child { padding: 36px 0; border-right: none; border-bottom: 1px solid var(--rule-dk); }
+    .founder { grid-template-columns: 1fr; }
+    .portrait { max-width: 420px; }
+    .contact { grid-template-columns: 1fr; }
+    footer { flex-direction: column; text-align: center; }
+  }
+  @media (max-width: 560px) {
+    body { font-size: 16px; }
+    .logo-sub { display: none; }
+    .nav-cta { padding: 10px 14px; font-size: 13px; }
+    .cta-long { display: none; }
+    .cta-short { display: inline; }
+    .quad { grid-template-columns: 1fr; }
+    .q { min-height: 0; }
+    .steps { grid-template-columns: 1fr; }
+    .facts { grid-template-columns: 1fr; }
+    .facts > li:nth-child(2) { padding-left: 0; border-left: none; }
     .form-grid { grid-template-columns: 1fr; }
-    footer { padding: 16px 24px; flex-direction: column; gap: 12px; text-align: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition: none !important; animation: none !important; }
   }
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 
-<nav>
-  <a href="#" class="logo-lockup">
-    <svg width="28" height="28" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+<header class="nav">
+  <a href="#top" class="logo-lockup" aria-label="Pelstow, back to top">
+    <svg width="30" height="30" viewBox="0 0 36 36" fill="none" aria-hidden="true">
       <rect x="1" y="1" width="15" height="15" stroke="#1A1A18" stroke-width="1.5"/>
       <rect x="20" y="1" width="15" height="15" fill="#D4570A"/>
       <rect x="1" y="20" width="15" height="15" fill="#1A1A18"/>
@@ -209,139 +349,234 @@
       <div class="logo-sub">Consulting</div>
     </div>
   </a>
-  <div class="nav-links">
-    <a href="#services" class="nav-link">Services</a>
+  <nav class="nav-links" aria-label="Primary">
+    <a href="#services" class="nav-link">Practice</a>
+    <a href="#approach" class="nav-link">Approach</a>
     <a href="#sectors" class="nav-link">Sectors</a>
     <a href="#about" class="nav-link">About</a>
-    <a href="#contact" class="nav-cta">Get in touch</a>
-  </div>
-</nav>
+    <a href="#contact" class="nav-cta"><span class="cta-long">Start a conversation</span><span class="cta-short">Contact</span></a>
+  </nav>
+</header>
 
-<section class="hero">
-  <div class="hero-l">
+<main id="main">
+
+<section class="hero" id="top" aria-label="Introduction">
+  <div class="h-band">
+    <h1 class="hero-h1"><span class="lt">Markets</span><span class="lt">understood.</span><span>Decisions</span><span>made.</span></h1>
+    <div class="h-side">
+      <p class="h-motto">Independent. Rigorous. Direct.</p>
+      <p class="hero-lede">Pelstow helps mid-market businesses navigate complex markets, define where they compete, and build strategies that hold up under pressure.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn">Start a conversation <svg class="arr" viewBox="0 0 14 12" aria-hidden="true"><path d="M0 6h12M7 1l5 5-5 5"/></svg></a>
+      </div>
+    </div>
+  </div>
+  <ul class="h-cols" aria-label="Sectors we know">
+    <li class="h-col"><a href="#s-mobility"><h2>Mobility&nbsp;&amp; Automotive</h2><p>OEM and tier strategy, the electrification transition, supply chain intelligence.</p><span class="h-more" aria-hidden="true"><svg class="arr" viewBox="0 0 14 12" aria-hidden="true"><path d="M0 6h12M7 1l5 5-5 5"/></svg></span></a></li>
+    <li class="h-col"><a href="#s-electronics"><h2>Electrical&nbsp;&amp; Electronics</h2><p>Market positioning, demand intelligence and the competitive landscape.</p><span class="h-more" aria-hidden="true"><svg class="arr" viewBox="0 0 14 12" aria-hidden="true"><path d="M0 6h12M7 1l5 5-5 5"/></svg></span></a></li>
+    <li class="h-col"><a href="#s-industrial"><h2>Industrial&nbsp;&amp; Emerging</h2><p>Adjacent market entry, opportunity assessment, early position strategy.</p><span class="h-more" aria-hidden="true"><svg class="arr" viewBox="0 0 14 12" aria-hidden="true"><path d="M0 6h12M7 1l5 5-5 5"/></svg></span></a></li>
+  </ul>
+</section>
+
+<section class="sec" id="services" aria-labelledby="svc-h">
+  <div class="sec-head">
+    <h2 class="h2" id="svc-h">Four ways in. One decision out.</h2>
+    <p class="sec-intro">Every engagement draws on one or more practice areas. All of them end the same way: with a call your leadership team can act on.</p>
+  </div>
+  <ul class="rows">
+    <li class="row">
+      <h3 class="row-name">Strategy</h3>
+      <p class="row-desc">Most strategies fail before they're executed — because they were built on consensus, not conviction. We work with leadership teams to make sharper choices about where to compete, what to stop doing, and how to build positions that are genuinely hard to replicate.</p>
+      <ul class="row-tags tag"><li>Market entry &amp; positioning</li><li>Portfolio decisions</li><li>Growth architecture</li></ul>
+    </li>
+    <li class="row">
+      <h3 class="row-name">Markets</h3>
+      <p class="row-desc">Markets don't wait for your planning cycle. We provide the kind of commercial intelligence that changes how leadership teams see their competitive environment — who's moving, what's shifting, and where the real opportunity actually sits.</p>
+      <ul class="row-tags tag"><li>Competitive landscape</li><li>Customer segmentation</li><li>Opportunity mapping</li></ul>
+    </li>
+    <li class="row">
+      <h3 class="row-name">Intelligence</h3>
+      <p class="row-desc">Most companies are reacting to information their competitors already have. We build ongoing intelligence capabilities — supplier, customer, and industry — that turn raw signal into structured insight before it becomes conventional wisdom.</p>
+      <ul class="row-tags tag"><li>Supplier &amp; customer intel</li><li>Industry signal tracking</li><li>Strategic monitoring</li></ul>
+    </li>
+    <li class="row">
+      <h3 class="row-name">Analytics</h3>
+      <p class="row-desc">We turn data into decisions. Not dashboards, not decks — the answers that change how leadership teams think and where they act.</p>
+      <ul class="row-tags tag"><li>Commercial data modelling</li><li>Customer value analysis</li><li>Pricing &amp; margin insight</li></ul>
+    </li>
+  </ul>
+</section>
+
+<section class="sec dark" id="approach" aria-labelledby="appr-h">
+  <div class="appr">
     <div>
-      <div class="eyebrow">Boutique strategy consulting</div>
-      <h1 class="hero-h1">Markets<br>understood.<br><strong>Decisions</strong><br>made.</h1>
+      <h2 class="h2" id="appr-h">We don't over‑engineer the answer.</h2>
+      <p class="appr-body">Large consultancies bring large teams, long timelines, and conclusions shaped by methodology. Pelstow works differently — closer to how an experienced operating executive thinks than how a consulting firm bills.</p>
+      <p class="appr-body">Our clients are mid-market businesses that need rigorous answers fast, without the overhead. We keep engagements lean, focused, and built around the decision.</p>
     </div>
-    <div class="hero-tagline">Strategy · Markets · Intelligence · Analytics</div>
+    <div class="quad">
+      <div class="q"><h3 class="q-h">Independent by design.</h3><p class="q-p">No house view to protect.</p></div>
+      <div class="q"><h3 class="q-h">Boutique by choice.</h3><p class="q-p">Senior attention, every time.</p></div>
+      <div class="q"><h3 class="q-h">We go to the market.</h3><p class="q-p">Not just the data.</p></div>
+      <div class="q"><h3 class="q-h">Finished means actionable.</h3><p class="q-p">If you can't act on it, it isn't finished.</p></div>
+    </div>
   </div>
-  <div class="hero-r">
-    <p class="hero-body">Pelstow helps mid-market businesses navigate complex markets, define where they compete, and build strategies that hold up under pressure. Independent. Rigorous. Direct.</p>
-    <div class="stats">
-      <div class="stat"><div class="stat-n">4</div><div class="stat-l">Practice areas</div></div>
-      <div class="stat"><div class="stat-n">Global</div><div class="stat-l">Market reach</div></div>
-    </div>
+  <figure class="pull">
+    <blockquote>Built around the decision&nbsp;— not the <b>deliverable.</b></blockquote>
+  </figure>
+</section>
+
+<section class="sec" id="process" aria-labelledby="proc-h">
+  <div class="sec-head">
+    <h2 class="h2" id="proc-h">How an engagement runs.</h2>
+    <p class="sec-intro">Short, senior and pointed at one question. The shape flexes with the problem; the sequence doesn't.</p>
+  </div>
+  <ol class="steps">
+    <li class="step"><span class="step-n">01</span><h3 class="step-h">Scoping &amp; framing</h3><p class="step-p">We define the precise question, agree what success looks like, and identify the sources and stakeholders that matter.</p></li>
+    <li class="step"><span class="step-n">02</span><h3 class="step-h">Research &amp; analysis</h3><p class="step-p">Primary research is core to how we work: interviews, market data and competitor mapping, tested against your internal view.</p></li>
+    <li class="step"><span class="step-n">03</span><h3 class="step-h">Synthesis</h3><p class="step-p">We distil the findings into clear commercial conclusions, challenge assumptions, and say what actually matters.</p></li>
+    <li class="step"><span class="step-n">04</span><h3 class="step-h">Delivery</h3><p class="step-p">Findings presented to leadership as a written report or working session, with recommendations you can act on.</p></li>
+  </ol>
+  <div class="terms">
+    <p>Every engagement is scoped to the decision it serves, with a fixed fee agreed before work starts.</p>
+    <a href="#contact" class="link">Talk through your situation <svg class="arr" viewBox="0 0 14 12" aria-hidden="true"><path d="M0 6h12M7 1l5 5-5 5"/></svg></a>
   </div>
 </section>
 
-<section id="services">
-  <div class="sec-hd">
-    <span class="sec-hl">What we do</span>
-    <span class="sec-hl" style="color:#C8C7BE;">Four practice areas</span>
+<section class="sec" id="work" aria-labelledby="work-h">
+  <div class="sec-head">
+    <h2 class="h2" id="work-h">Decisions we've helped make.</h2>
+    <p class="sec-intro">Three engagements, with clients anonymised by sector and engagement type.</p>
   </div>
-  <div class="svc-grid">
-    <div class="sc"><div class="sn">01</div><div class="st">Strategy</div><div class="sd">Most strategies fail before they're executed — because they were built on consensus, not conviction. We work with leadership teams to make sharper choices about where to compete, what to stop doing, and how to build positions that are genuinely hard to replicate.</div><div class="tags"><span class="tag">Market entry &amp; positioning</span><span class="tag">Portfolio decisions</span><span class="tag">Growth architecture</span></div></div>
-    <div class="sc"><div class="sn">02</div><div class="st">Markets</div><div class="sd">Markets don't wait for your planning cycle. We provide the kind of commercial intelligence that changes how leadership teams see their competitive environment — who's moving, what's shifting, and where the real opportunity actually sits.</div><div class="tags"><span class="tag">Competitive landscape</span><span class="tag">Customer segmentation</span><span class="tag">Opportunity mapping</span></div></div>
-    <div class="sc"><div class="sn">03</div><div class="st">Intelligence</div><div class="sd">Most companies are reacting to information their competitors already have. We build ongoing intelligence capabilities — supplier, customer, and industry — that turn raw signal into structured insight before it becomes conventional wisdom.</div><div class="tags"><span class="tag">Supplier &amp; customer intel</span><span class="tag">Industry signal tracking</span><span class="tag">Strategic monitoring</span></div></div>
-    <div class="sc"><div class="sn">04</div><div class="st">Analytics</div><div class="sd">We turn data into decisions. Not dashboards, not decks — the answers that change how leadership teams think and where they act.</div><div class="tags"><span class="tag">Commercial data modelling</span><span class="tag">Customer value analysis</span><span class="tag">Pricing &amp; margin insight</span></div></div>
-  </div>
-</section>
-
-<section id="about">
-  <div class="pos">
-    <div class="pos-l">
-      <div class="plbl">Our approach</div>
-      <div class="pos-bar"></div>
-      <div class="pos-h">We don't<br>over-engineer<br>the answer.</div>
-      <div class="pts">
-        <div class="pt"><span class="ptn">—</span><span class="ptx">Independent by design. No house view to protect.</span></div>
-        <div class="pt"><span class="ptn">—</span><span class="ptx">Boutique by choice. Senior attention, every time.</span></div>
-        <div class="pt"><span class="ptn">—</span><span class="ptx">We go to the market. Not just the data.</span></div>
-        <div class="pt"><span class="ptn">—</span><span class="ptx">If you can't act on it, it isn't finished.</span></div>
-      </div>
-    </div>
-    <div class="pos-r">
-      <div>
-        <div class="plbl">Why Pelstow</div>
-        <p class="pos-body">Large consultancies bring large teams, long timelines, and conclusions shaped by methodology. Pelstow works differently — closer to how an experienced operating executive thinks than how a consulting firm bills.<br><br>We work across industries where markets are complex, competition is structural, and the cost of a wrong call is high. Our clients are mid-market businesses that need rigorous answers fast, without the overhead. We keep engagements lean, focused, and built around the decision — not the deliverable.</p>
-      </div>
-      <div class="pullquote">
-        <div class="pq-text">"Built around the decision —<br>not the <em>deliverable.</em>"</div>
-      </div>
-    </div>
+  <table class="ledger">
+    <colgroup><col class="c1"><col><col class="c3"></colgroup>
+    <thead><tr><th scope="col">Engagement</th><th scope="col">The decision</th><th scope="col">What changed</th></tr></thead>
+    <tbody>
+      <tr>
+        <th scope="row" class="l-sector"><span class="l-sec">Mobility</span><span class="l-type">Market-entry assessment</span><span class="l-client">A global Tier-1 automotive supplier</span></th>
+        <td data-label="The decision"><p class="l-q">Whether to invest in qualifying a new engineered-polymer platform for electric-vehicle applications, with internal views split on which applications to pursue, how long qualification would take, and whether competitors were too far ahead.</p><p>We sized demand by application, mapped competitors and OEM qualification timelines, and stress-tested the business case under three scenarios. The recommendation: a focused entry into two priority applications rather than a broad launch. Leadership approved the narrower plan and redirected capital and technical resources to it.</p></td>
+        <td class="out" data-label="What changed"><b>$45M</b><span>addressable annual opportunity identified, with a ~30% shorter projected path to first revenue</span></td>
+      </tr>
+      <tr>
+        <th scope="row" class="l-sector"><span class="l-sec">Specialty Chemicals</span><span class="l-type">Portfolio and positioning review</span><span class="l-client">A specialty chemicals producer</span></th>
+        <td data-label="The decision"><p class="l-q">Growth had flattened across a broad portfolio. Leadership needed to know which segments justified investment, which were diluting focus, and where the company had a defensible position.</p><p>We tested long-held assumptions against customer interviews and market evidence, then ranked each segment on growth, margin and competitive strength. The commercial team shifted sales and marketing resources toward the strongest segments and began phasing down the weakest.</p></td>
+        <td class="out" data-label="What changed"><b>~60%</b><span>of commercial effort refocused on the three highest-potential segments, targeting a 3–5 point margin improvement</span></td>
+      </tr>
+      <tr>
+        <th scope="row" class="l-sector"><span class="l-sec">Electrical &amp; Electronics</span><span class="l-type">Rapid strategic decision support</span><span class="l-client">A mid-market electronics manufacturer</span></th>
+        <td data-label="The decision"><p class="l-q">A board decision was due within weeks: commit to a new product direction or hold course, with no time for a conventional study.</p><p>We delivered a focused, board-ready recommendation covering demand, competitive response, supply-chain exposure and risk, written for decision-makers, not analysts. The board approved a revised launch sequence that changed the company's priorities and gave it a clear rationale to proceed.</p></td>
+        <td class="out" data-label="What changed"><b>4 weeks</b><span>from brief to board-ready recommendation, informing the investment decision</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="quotes">
+    <figure class="quote"><blockquote>We were facing a decision with significant capital and market-position implications, and our internal views were divided. Pelstow cut through the noise and brought a clear, evidence-based recommendation that our leadership team could act on with confidence. The analysis was rigorous, but what set it apart was how well it reflected the way our markets actually work, not just what the data said on paper.</blockquote><figcaption><cite><b>Senior Executive</b><br>Global automotive supplier</cite></figcaption></figure>
+    <figure class="quote"><blockquote>Christian understands the materials value chain from resin to end use, and it showed from the first conversation. He asked the questions our own team hadn't thought to ask, challenged some of our long-held assumptions, and delivered insight we simply couldn't have developed internally. The result was a sharper view of where we should compete and where we shouldn't.</blockquote><figcaption><cite><b>Commercial Leader</b><br>Specialty chemicals producer</cite></figcaption></figure>
+    <figure class="quote"><blockquote>We needed a trusted answer on a tight timeline, and Pelstow delivered without sacrificing quality. The work was focused, practical, and clearly written for decision-makers rather than analysts. It directly shaped a decision that changed our priorities, and it gave our board a level of clarity we hadn't had before.</blockquote><figcaption><cite><b>CEO</b><br>Mid-market electronics manufacturer</cite></figcaption></figure>
   </div>
 </section>
 
-<section id="sectors">
-  <div class="sec-hd">
-    <span class="sec-hl">Sectors we know</span>
-    <span class="sec-hl" style="color:#C8C7BE;">Where we work</span>
+<section class="sec dark" id="sectors" aria-labelledby="sec-h">
+  <div class="sec-head">
+    <h2 class="h2" id="sec-h">Sectors we know from the inside.</h2>
+    <p class="sec-intro">Industries where markets are complex, competition is structural, and the cost of a wrong call is high.</p>
   </div>
-  <div class="mkt-grid">
-    <div class="mc"><div class="mbar"><div class="mfill" style="width:85%;"></div></div><div class="ml">Mobility &amp; Automotive</div><div class="md">One of the most structurally complex industries on earth — and one of the most consequential to get wrong. We understand the supply chain structure, the relationships that hold it together, and who influences at every level — including how electrification and new commercial pressures are reshaping it.</div><div class="tags" style="margin-top:20px;"><span class="tag">OEM &amp; tier strategy</span><span class="tag">Electrification transition</span><span class="tag">Supply chain intelligence</span></div></div>
-    <div class="mc"><div class="mbar"><div class="mfill" style="width:65%;"></div></div><div class="ml">Electrical &amp; Electronics</div><div class="md">Demand is accelerating and the competitive landscape is shifting faster than most roadmaps can track. We help businesses understand where the market is going, who's winning, and what it takes to hold a defensible position in a sector that doesn't slow down.</div><div class="tags" style="margin-top:20px;"><span class="tag">Market positioning</span><span class="tag">Demand intelligence</span><span class="tag">Competitive landscape</span></div></div>
-    <div class="mc"><div class="mbar"><div class="mfill" style="width:50%;"></div></div><div class="ml">Industrial &amp; Emerging</div><div class="md">The most interesting opportunities rarely sit inside your existing market. We work with businesses entering adjacent sectors — helping them move fast, avoid the obvious mistakes, and build positions before the market prices them in.</div><div class="tags" style="margin-top:20px;"><span class="tag">Adjacent market entry</span><span class="tag">Opportunity assessment</span><span class="tag">Early position strategy</span></div></div>
+  <div class="sectors">
+    <article class="sector" id="s-mobility"><h3>Mobility&nbsp;&amp; Automotive</h3><p>One of the most structurally complex industries on earth — and one of the most consequential to get wrong. We understand the supply chain structure, the relationships that hold it together, and who influences at every level — including how electrification and new commercial pressures are reshaping it.</p><ul class="row-tags tag"><li>OEM &amp; tier strategy</li><li>Electrification transition</li><li>Supply chain intelligence</li></ul></article>
+    <article class="sector" id="s-electronics"><h3>Electrical&nbsp;&amp; Electronics</h3><p>Demand is accelerating and the competitive landscape is shifting faster than most roadmaps can track. We help businesses understand where the market is going, who's winning, and what it takes to hold a defensible position in a sector that doesn't slow down.</p><ul class="row-tags tag"><li>Market positioning</li><li>Demand intelligence</li><li>Competitive landscape</li></ul></article>
+    <article class="sector" id="s-industrial"><h3>Industrial&nbsp;&amp; Emerging</h3><p>The most interesting opportunities rarely sit inside your existing market. We work with businesses entering adjacent sectors — helping them move fast, avoid the obvious mistakes, and build positions before the market prices them in.</p><ul class="row-tags tag"><li>Adjacent market entry</li><li>Opportunity assessment</li><li>Early position strategy</li></ul></article>
   </div>
 </section>
 
-<section id="contact" class="contact-band">
-  <div class="ct-l">
+<section class="sec" id="about" aria-labelledby="f-h">
+  <div class="founder">
+    <figure class="portrait">
+      <img src="christian-sodeikat.webp" srcset="christian-sodeikat-480.webp 480w, christian-sodeikat.webp 960w" sizes="(max-width: 900px) min(420px, 100vw), 40vw" width="960" height="1200" alt="Christian Sodeikat, founder and principal of Pelstow" loading="lazy" decoding="async">
+    </figure>
     <div>
-      <div class="clbl">Get in touch</div>
-      <div class="ct-h">Let's talk about<br>what you're<br>trying to solve.</div>
+      <h2 class="h2 f-name" id="f-h">Christian Sodeikat</h2>
+      <p class="f-role">Founder &amp; Principal</p>
+      <p class="f-bio">Christian Sodeikat is the founder of Pelstow and a senior commercial leader with more than 15 years across engineered plastics, advanced materials, and specialty chemicals. He has guided growth strategy, end-market positioning, and go-to-market decisions across mobility, healthcare, and electrical and electronics, from global supplier to distributor to manufacturer.</p>
+      <p class="f-bio">Pelstow gives executive teams a clear, evidence-backed answer to the decisions that shape their market position. Every engagement is led by Christian personally: the person you meet is the person who does the work.</p>
+      <ul class="facts">
+        <li><span class="fact-k">Based in</span><span class="fact-v">Detroit, working globally</span></li>
+        <li><span class="fact-k">Coverage</span><span class="fact-v">North America and DACH, fluent in German</span></li>
+        <li class="wide"><span class="fact-k">Experience</span>
+          <ul class="fact-list">
+            <li>15+ years leading commercial and market strategy in engineered plastics, advanced materials and specialty chemicals</li>
+            <li>Global End Market Manager, Nexeo Plastics: Mobility, Healthcare and EE&amp;I</li>
+            <li>Senior roles at DSM, Eastman, Celanese and Lear</li>
+          </ul></li>
+        <li class="wide"><span class="fact-k">Credentials</span>
+          <ul class="fact-list">
+            <li>MBA, Lawrence Technological University</li>
+            <li>B.S., Mechanical Engineering Technology, Lawrence Technological University</li>
+          </ul></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="sec dark" id="contact" aria-labelledby="ct-h">
+  <div class="contact">
+    <div>
+      <h2 class="ct-h" id="ct-h">Let's talk about what you're trying to <em>solve.</em></h2>
       <p class="ct-body">We don't do long sales processes. If there's a fit, we'll know quickly — and if there isn't, we'll tell you that too. Either way, it starts with a conversation.</p>
+      <p class="ct-sub">Typical engagements</p>
+      <ul class="clist">
+        <li>Market assessment</li>
+        <li>Strategy review</li>
+        <li>Commercial due diligence</li>
+        <li>Advisory retainer</li>
+      </ul>
+      <p class="ct-sub">Prefer email?</p>
+      <a class="ct-mail" href="mailto:contact@pelstow.com">contact@pelstow.com</a>
     </div>
     <div>
-      <div class="clbl">Engagement types</div>
-      <div class="clist">
-        <div class="cli"><span class="clin">—</span><span class="clit">Market assessment</span></div>
-        <div class="cli"><span class="clin">—</span><span class="clit">Strategy review</span></div>
-        <div class="cli"><span class="clin">—</span><span class="clit">Commercial due diligence</span></div>
-        <div class="cli"><span class="clin">—</span><span class="clit">Advisory retainer</span></div>
+      <div id="contact-form-wrap">
+        <form id="contact-form" action="https://formspree.io/f/mpqbzoar" method="POST" novalidate>
+          <div class="form-grid">
+            <div class="field">
+              <label for="f-name">Name</label>
+              <input type="text" id="f-name" name="name" placeholder="Your name" autocomplete="name" required aria-describedby="e-name">
+              <span class="f-err" id="e-name"></span>
+            </div>
+            <div class="field">
+              <label for="f-company">Company <span class="opt">(optional)</span></label>
+              <input type="text" id="f-company" name="company" placeholder="Your company" autocomplete="organization">
+            </div>
+            <div class="field full">
+              <label for="f-email">Email</label>
+              <input type="email" id="f-email" name="email" placeholder="you@company.com" autocomplete="email" required aria-describedby="e-email">
+              <span class="f-err" id="e-email"></span>
+            </div>
+            <div class="field full">
+              <label for="f-message">What are you working on?</label>
+              <textarea id="f-message" name="message" placeholder="The decision in front of you, and what's making it hard." required aria-describedby="e-message"></textarea>
+              <span class="f-err" id="e-message"></span>
+            </div>
+          </div>
+          <label class="human">
+            <input type="checkbox" id="f-human">
+            <span>I'm a real person, I promise</span>
+          </label>
+          <button type="submit" class="btn submit" id="f-submit" disabled>Send message <svg class="arr" viewBox="0 0 14 12" aria-hidden="true"><path d="M0 6h12M7 1l5 5-5 5"/></svg></button>
+          <p class="form-alert" id="form-alert" role="alert" hidden></p>
+        </form>
       </div>
-    </div>
-  </div>
-  <div class="ct-r">
-    <div id="contact-form-wrap">
-      <div class="clbl">Send a message</div>
-      <form id="contact-form" action="https://formspree.io/f/mpqbzoar" method="POST" novalidate>
-        <div class="form-grid">
-          <div class="form-field">
-            <label for="f-name">Name</label>
-            <input type="text" id="f-name" name="name" placeholder="Your name" required>
-          </div>
-          <div class="form-field">
-            <label for="f-company">Company</label>
-            <input type="text" id="f-company" name="company" placeholder="Your company">
-          </div>
-          <div class="form-field full">
-            <label for="f-email">Email</label>
-            <input type="email" id="f-email" name="email" placeholder="your@email.com" required>
-          </div>
-          <div class="form-field full">
-            <label for="f-message">Message</label>
-            <textarea id="f-message" name="message" placeholder="Tell us what you're working on..." required></textarea>
-          </div>
-        </div>
-        <label class="human-check">
-          <input type="checkbox" id="f-human">
-          <span>I'm a real person, I promise</span>
-        </label>
-        <button type="submit" class="form-submit" id="f-submit" disabled>Send message</button>
-      </form>
-    </div>
-    <div class="form-success" id="form-success">
-      <div class="fs-icon">
-        <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><path d="M1 6L5.5 10.5L15 1" stroke="#F5F4F0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="form-success" id="form-success" hidden tabindex="-1">
+        <h3>Message sent.</h3>
+        <p>Thanks — we'll be in touch shortly.</p>
       </div>
-      <p>Message sent — we'll be in touch shortly.</p>
     </div>
   </div>
 </section>
+
+</main>
 
 <footer>
-  <a href="#" class="logo-lockup" style="text-decoration:none;">
-    <svg width="18" height="18" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+  <a href="#top" class="logo-lockup" aria-label="Pelstow, back to top">
+    <svg width="20" height="20" viewBox="0 0 36 36" fill="none" aria-hidden="true">
       <rect x="1" y="1" width="15" height="15" stroke="#4A4A44" stroke-width="1.5"/>
       <rect x="20" y="1" width="15" height="15" fill="#D4570A"/>
       <rect x="1" y="20" width="15" height="15" fill="#4A4A44"/>
@@ -349,55 +584,64 @@
     </svg>
     <span class="ft-logo">PELSTOW</span>
   </a>
-  <span class="ft">© 2025 Pelstow Consulting</span>
-  <span class="ft">pelstow.com</span>
+  <nav aria-label="Footer"><a href="#services">Practice</a><a href="#approach">Approach</a><a href="#sectors">Sectors</a><a href="#contact">Contact</a></nav>
+  <span><a href="mailto:contact@pelstow.com">contact@pelstow.com</a> · © <span id="yr">2026</span> Pelstow Consulting · Detroit</span>
 </footer>
 
 <script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
   const humanCheck = document.getElementById('f-human');
   const submitBtn  = document.getElementById('f-submit');
   const form       = document.getElementById('contact-form');
   const formWrap   = document.getElementById('contact-form-wrap');
   const successMsg = document.getElementById('form-success');
+  const alertBox   = document.getElementById('form-alert');
+  const btnLabel   = submitBtn.innerHTML;
 
-  humanCheck.addEventListener('change', () => {
-    submitBtn.disabled = !humanCheck.checked;
+  humanCheck.addEventListener('change', () => { submitBtn.disabled = !humanCheck.checked; });
+
+  const rules = {
+    'f-name':    v => v ? '' : 'Please add your name.',
+    'f-email':   v => !v ? 'Please add your email so we can reply.' : (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '' : 'That email address doesn’t look complete.'),
+    'f-message': v => v ? '' : 'A line or two on what you’re working on helps us reply usefully.'
+  };
+  function check(id) {
+    const el = document.getElementById(id);
+    const msg = rules[id](el.value.trim());
+    const field = el.closest('.field');
+    document.getElementById('e-' + id.slice(2)).textContent = msg;
+    if (msg) { field.setAttribute('data-invalid', ''); el.setAttribute('aria-invalid', 'true'); }
+    else { field.removeAttribute('data-invalid'); el.removeAttribute('aria-invalid'); }
+    return !msg;
+  }
+  Object.keys(rules).forEach(id => {
+    document.getElementById(id).addEventListener('blur', e => { if (e.target.value.trim() || e.target.closest('[data-invalid]')) check(id); });
   });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const name    = document.getElementById('f-name').value.trim();
-    const email   = document.getElementById('f-email').value.trim();
-    const message = document.getElementById('f-message').value.trim();
-    if (!name || !email || !message) return;
-
+    alertBox.hidden = true;
+    const results = Object.keys(rules).map(check);
+    if (results.includes(false)) {
+      document.getElementById(Object.keys(rules)[results.indexOf(false)]).focus();
+      return;
+    }
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending...';
-
-    const data = new FormData(form);
-
+    submitBtn.textContent = 'Sending…';
     try {
-      const response = await fetch(form.action, {
-        method: 'POST',
-        body: data,
-        headers: { 'Accept': 'application/json' }
-      });
-
-      if (response.ok) {
-        formWrap.style.display = 'none';
-        successMsg.style.display = 'block';
-      } else {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Send message';
-        alert('Something went wrong. Please try again or email us directly.');
-      }
+      const response = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } });
+      if (!response.ok) throw new Error(response.status);
+      formWrap.hidden = true;
+      successMsg.hidden = false;
+      successMsg.focus();
     } catch (err) {
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Send message';
-      alert('Something went wrong. Please try again or email us directly.');
+      submitBtn.innerHTML = btnLabel;
+      alertBox.innerHTML = 'Your message didn’t send. Please try again in a moment, or email <a href="mailto:contact@pelstow.com">contact@pelstow.com</a>.';
+      alertBox.hidden = false;
     }
   });
 </script>
-
 </body>
 </html>
