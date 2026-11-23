@@ -1,0 +1,5 @@
+# Keep the Cloudflare preview domain out of search results (pelstow.com is canonical)
+https://pelstow.pages.dev/*
+  X-Robots-Tag: noindex
+https://:version.pelstow.pages.dev/*
+  X-Robots-Tag: noindex
