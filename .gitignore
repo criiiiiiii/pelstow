@@ -5,7 +5,6 @@
 .impeccable/
 DESIGN.md
 PRODUCT.md
-refresh/
 
 # Image provenance sidecars (local record only)
 *.webp.json
