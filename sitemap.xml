@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url><loc>https://pelstow.com/</loc><lastmod>2026-11-23</lastmod></url>
+  <url><loc>https://pelstow.com/mobility/</loc><lastmod>2026-11-23</lastmod></url>
+  <url><loc>https://pelstow.com/electronics/</loc><lastmod>2026-11-23</lastmod></url>
+  <url><loc>https://pelstow.com/industrial/</loc><lastmod>2026-11-23</lastmod></url>
+  <url><loc>https://pelstow.com/north-america-market-entry/</loc><lastmod>2026-11-23</lastmod><xhtml:link rel="alternate" hreflang="en" href="https://pelstow.com/north-america-market-entry/"/><xhtml:link rel="alternate" hreflang="de" href="https://pelstow.com/de/markteintritt-nordamerika/"/></url>
+  <url><loc>https://pelstow.com/de/markteintritt-nordamerika/</loc><lastmod>2026-11-23</lastmod><xhtml:link rel="alternate" hreflang="en" href="https://pelstow.com/north-america-market-entry/"/><xhtml:link rel="alternate" hreflang="de" href="https://pelstow.com/de/markteintritt-nordamerika/"/></url>
 </urlset>
